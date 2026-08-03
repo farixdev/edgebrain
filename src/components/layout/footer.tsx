@@ -135,7 +135,7 @@ export function Footer() {
             &copy; {year} EdgeBrain Studios. All rights reserved.
           </p>
           <p className="text-xs text-[var(--color-mute)]">
-            Lahore, Pakistan &mdash; Working worldwide
+            Lahore, Pakistan
           </p>
         </div>
       </div>
