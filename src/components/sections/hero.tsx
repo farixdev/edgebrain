@@ -54,7 +54,7 @@ export function Hero() {
       {showEther && (
         <div
           className="absolute inset-0 z-0 pointer-events-none"
-          style={{ opacity: 0.12 }}
+          style={{ opacity: 0.35 }}
           aria-hidden="true"
         >
           <LiquidEther
@@ -119,24 +119,6 @@ export function Hero() {
             </ButtonLink>
           </motion.div>
         </div>
-      </div>
-
-      {/* Decorative geometric shape — desktop only */}
-      <div
-        className="absolute right-[-5%] top-1/2 -translate-y-1/2 w-[40vw] h-[40vw] max-w-[600px] max-h-[600px] hidden lg:block pointer-events-none z-[1]"
-        aria-hidden="true"
-      >
-        <div className="relative w-full h-full">
-          <div className="absolute inset-0 rounded-[30%] bg-gradient-to-br from-[var(--color-ink)]/[0.03] to-[var(--color-ink)]/[0.08] rotate-12" />
-          <div className="absolute inset-[15%] rounded-[40%] border border-[var(--color-hairline-light)] rotate-[-8deg]" />
-          <div className="absolute inset-[30%] rounded-[35%] bg-[var(--color-yellow)]/[0.06] rotate-[20deg]" />
-          <div className="absolute top-[45%] left-[42%] w-3 h-3 rounded-full bg-[var(--color-yellow)]" />
-        </div>
-      </div>
-
-      {/* Mobile decorative element */}
-      <div className="absolute right-6 top-28 lg:hidden z-[1]" aria-hidden="true">
-        <div className="w-2 h-2 rounded-full bg-[var(--color-yellow)]" />
       </div>
 
       <ServicesMarquee />
