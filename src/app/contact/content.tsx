@@ -25,6 +25,8 @@ interface FormErrors {
 export function ContactPageContent() {
   const shouldReduceMotion = useReducedMotion();
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [sendError, setSendError] = useState("");
   const [errors, setErrors] = useState<FormErrors>({});
   const [form, setForm] = useState<FormData>({
     name: "",
@@ -50,12 +52,33 @@ export function ContactPageContent() {
     return Object.keys(newErrors).length === 0;
   }
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     if (!validate()) return;
-    // TODO: Wire to Resend, Formspree, or Next.js API route
-    // POST to /api/contact with form data
-    setSubmitted(true);
+
+    setSending(true);
+    setSendError("");
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.error || "Something went wrong.");
+      }
+
+      setSubmitted(true);
+    } catch (err) {
+      setSendError(
+        err instanceof Error ? err.message : "Failed to send. Please try again."
+      );
+    } finally {
+      setSending(false);
+    }
   }
 
   function updateField(field: keyof FormData, value: string) {
@@ -236,8 +259,17 @@ export function ContactPageContent() {
                   </select>
                 </div>
 
-                <Button type="submit" size="lg" className="w-full sm:w-auto mt-2">
-                  <span>Send message</span>
+                {sendError && (
+                  <p className="text-sm text-red-500">{sendError}</p>
+                )}
+
+                <Button
+                  type="submit"
+                  size="lg"
+                  className="w-full sm:w-auto mt-2"
+                  disabled={sending}
+                >
+                  <span>{sending ? "Sending..." : "Send message"}</span>
                 </Button>
               </motion.form>
             )}

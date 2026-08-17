@@ -1,0 +1,201 @@
+{
+  "contact": {
+    "phone": "+92 327 0944766",
+    "phoneTel": "tel:+923270944766",
+    "whatsapp": "https://wa.me/923270944766",
+    "email": "edgebrainstudios@gmail.com",
+    "location": "Lahore, Pakistan",
+    "locationDetail": "Based in Lahore, Pakistan — working worldwide."
+  },
+  "services": [
+    {
+      "number": "01",
+      "title": "Web Development",
+      "description": "Performant, responsive web applications built with modern frameworks.",
+      "detail": "From marketing sites to complex platforms — we build fast, accessible, and scalable web experiences using Next.js, React, and TypeScript.",
+      "href": "/services#web-development"
+    },
+    {
+      "number": "02",
+      "title": "Mobile Apps",
+      "description": "Cross-platform mobile experiences that feel native.",
+      "detail": "iOS and Android apps built with React Native and Flutter. Smooth animations, offline-first architecture, and seamless backend integration.",
+      "href": "/services#mobile-apps"
+    },
+    {
+      "number": "03",
+      "title": "AI Automation",
+      "description": "Intelligent systems that eliminate manual workflows.",
+      "detail": "Custom AI pipelines, workflow automation, and intelligent agents that save time and reduce errors across your operations.",
+      "href": "/services#ai-automation"
+    },
+    {
+      "number": "04",
+      "title": "AI Integration & Consulting",
+      "description": "Strategic AI adoption tailored to your business.",
+      "detail": "We help you identify where AI fits, build proof-of-concepts, and integrate large language models and machine learning into your existing stack.",
+      "href": "/services#ai-consulting"
+    }
+  ],
+  "projects": [
+    {
+      "slug": "edgebrain-studios",
+      "title": "EdgeBrain Studios",
+      "category": "Web Development",
+      "description": "Our own portfolio — built with Next.js, GSAP, and R3F.",
+      "color": "#1a1a1a",
+      "accent": "#FFD400",
+      "placeholder": false
+    },
+    {
+      "slug": "project-atlas",
+      "title": "Project Atlas",
+      "category": "AI Automation",
+      "description": "Intelligent document processing pipeline for enterprise.",
+      "color": "#0f1923",
+      "accent": "#4A9EFF",
+      "placeholder": true
+    },
+    {
+      "slug": "pulse-mobile",
+      "title": "Pulse Mobile",
+      "category": "Mobile App",
+      "description": "Cross-platform health tracking with real-time sync.",
+      "color": "#1a0f23",
+      "accent": "#9B59B6",
+      "placeholder": true
+    }
+  ],
+  "processSteps": [
+    {
+      "number": "01",
+      "title": "Discover",
+      "description": "We dig into your goals, users, and constraints. Research the landscape, define scope, and align on what success looks like."
+    },
+    {
+      "number": "02",
+      "title": "Design",
+      "description": "Wireframes, prototypes, and visual design — iterated fast. We design for clarity, not decoration."
+    },
+    {
+      "number": "03",
+      "title": "Build",
+      "description": "Clean, tested, production-grade code. We ship iteratively, so you see progress weekly and can steer the build."
+    },
+    {
+      "number": "04",
+      "title": "Ship",
+      "description": "Launch, monitor, and refine. We handle deployment, performance tuning, and post-launch support."
+    }
+  ],
+  "stats": [
+    {
+      "value": 12,
+      "suffix": "+",
+      "label": "Projects Shipped"
+    },
+    {
+      "value": 98,
+      "suffix": "%",
+      "label": "Client Satisfaction"
+    },
+    {
+      "value": 4,
+      "suffix": " weeks",
+      "label": "Avg. Delivery"
+    },
+    {
+      "value": 99.9,
+      "suffix": "%",
+      "label": "Uptime"
+    }
+  ],
+  "reviews": [
+    {
+      "quote": "Their AI integration work saved our team 20+ hours a week. Clear communication, sharp execution.",
+      "name": "Marcus Rivera",
+      "role": "CTO",
+      "company": "DataFlow",
+      "placeholder": true
+    },
+    {
+      "quote": "EdgeBrain delivered a platform that exceeded our expectations — fast, polished, and exactly what our users needed.",
+      "name": "Sarah Chen",
+      "role": "Head of Product",
+      "company": "TechCorp",
+      "placeholder": true
+    },
+    {
+      "quote": "We needed a partner who could move fast without cutting corners. EdgeBrain was exactly that.",
+      "name": "Aisha Patel",
+      "role": "Founder",
+      "company": "NovaBuild",
+      "placeholder": true
+    },
+    {
+      "quote": "The mobile app they built handles 50k+ daily users without breaking a sweat. Solid engineering.",
+      "name": "James Okonkwo",
+      "role": "VP Engineering",
+      "company": "HealthSync",
+      "placeholder": true
+    },
+    {
+      "quote": "They turned our outdated website into a conversion machine. Bounce rate dropped 40% in the first month.",
+      "name": "Emily Zhao",
+      "role": "Marketing Director",
+      "company": "Amplify",
+      "placeholder": true
+    },
+    {
+      "quote": "EdgeBrain feels like an extension of our team. Responsive, transparent, and technically sharp.",
+      "name": "David Larsson",
+      "role": "CEO",
+      "company": "Nordic Digital",
+      "placeholder": true
+    }
+  ],
+  "faqs": [
+    {
+      "question": "What services does EdgeBrain Studios offer?",
+      "answer": "We specialize in four core areas: custom web development using modern frameworks like Next.js and React, cross-platform mobile app development, AI automation and workflow optimization, and AI integration consulting. Every engagement is tailored to your specific business needs."
+    },
+    {
+      "question": "How long does a typical project take?",
+      "answer": "Most projects ship within 4–8 weeks from kickoff to launch. MVPs and marketing sites can go live in as little as 2–3 weeks. Enterprise platforms with complex integrations may take 3–4 months. We deliver iteratively, so you see working software every week."
+    },
+    {
+      "question": "Do you work with startups or enterprises?",
+      "answer": "Both. We’ve helped early-stage startups launch their first product and supported enterprise teams building internal tools and customer-facing platforms. Our process scales to fit — lean for startups, structured for larger organizations."
+    },
+    {
+      "question": "What does your tech stack look like?",
+      "answer": "Our core stack includes Next.js, React, TypeScript, Node.js, and Python. For mobile, we use React Native and Flutter. On the AI side, we work with OpenAI, custom ML pipelines, and vector databases. Infrastructure runs on AWS, Vercel, and Docker."
+    },
+    {
+      "question": "How do you handle AI integration?",
+      "answer": "We start by identifying where AI creates the most value in your workflow — not where it’s trendiest. Then we build proof-of-concepts to validate the approach before committing to a full build. Our AI integrations include LLM-powered features, document processing, automated workflows, and intelligent agents."
+    },
+    {
+      "question": "What’s your pricing model?",
+      "answer": "We work on a project basis with fixed-scope pricing, so you know the cost upfront. For ongoing partnerships, we offer monthly retainers. Every engagement starts with a free discovery call to scope the work and align on budget."
+    }
+  ],
+  "differentiators": [
+    {
+      "title": "End-to-end ownership",
+      "description": "Design, development, and deployment — handled by one team. No handoffs, no gaps, no miscommunication between vendors."
+    },
+    {
+      "title": "AI-first thinking",
+      "description": "Every solution we build considers how AI can reduce cost, save time, or unlock capabilities your competitors haven’t figured out yet."
+    },
+    {
+      "title": "Built for speed",
+      "description": "We ship MVPs in weeks, not months. Iterative delivery means you see working software fast and can steer the build in real time."
+    },
+    {
+      "title": "No agency bloat",
+      "description": "Small team, senior engineers, direct communication. No layers of project managers between you and the people writing your code."
+    }
+  ]
+}

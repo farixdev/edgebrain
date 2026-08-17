@@ -4,7 +4,7 @@ import { WorkPageContent } from "./content";
 export const metadata: Metadata = {
   title: "Work",
   description:
-    "See what EdgeBrain Studios has built — web apps, mobile experiences, and AI-powered systems.",
+    "Explore the EdgeBrain Studios portfolio — case studies and web development projects including web apps, mobile experiences, and AI-powered systems.",
 };
 
 export default function WorkPage() {

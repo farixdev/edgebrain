@@ -57,7 +57,7 @@ export function StatsHome() {
   const shouldReduceMotion = useReducedMotion();
 
   return (
-    <Section variant="light">
+    <Section variant="dark" noise>
       <div
         ref={ref}
         className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12"
@@ -75,7 +75,7 @@ export function StatsHome() {
               delay: i * 0.1,
             }}
           >
-            <div className="text-display-xl text-[var(--color-ink)] mb-2">
+            <div className="text-display-xl text-[var(--color-offwhite)] mb-2">
               <CountUp target={stat.value} suffix={stat.suffix} inView={inView} />
             </div>
             <p className="text-sm text-[var(--color-mute)] uppercase tracking-[0.1em] font-medium">

@@ -6,35 +6,7 @@ import Link from "next/link";
 import { Section } from "@/components/ui/section";
 import { DURATION, EASE, viewportOnce } from "@/lib/motion";
 import { ArrowRight } from "lucide-react";
-
-const PROJECTS = [
-  {
-    slug: "edgebrain-studios",
-    title: "EdgeBrain Studios",
-    category: "Web Development",
-    description: "Our own portfolio — built with Next.js, GSAP, and R3F.",
-    color: "#1a1a1a",
-    accent: "#FFD400",
-  },
-  {
-    slug: "project-atlas",
-    title: "Project Atlas",
-    category: "AI Automation",
-    description: "Intelligent document processing pipeline for enterprise.",
-    color: "#0f1923",
-    accent: "#4A9EFF",
-    placeholder: true,
-  },
-  {
-    slug: "pulse-mobile",
-    title: "Pulse Mobile",
-    category: "Mobile App",
-    description: "Cross-platform health tracking with real-time sync.",
-    color: "#1a0f23",
-    accent: "#9B59B6",
-    placeholder: true,
-  },
-];
+import { PROJECTS } from "@/lib/constants";
 
 function ProjectCard({
   project,

@@ -63,6 +63,33 @@ export default function RootLayout({
       className={`${spaceGrotesk.variable} ${inter.variable} ${poppins.variable}`}
     >
       <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "EdgeBrain Studios",
+              url: "https://edgebrainstudios.com",
+              description:
+                "EdgeBrain Studios is a software studio specializing in web development, mobile apps, AI automation, and consulting. Based in Lahore, working worldwide.",
+              contactPoint: {
+                "@type": "ContactPoint",
+                telephone: "+92-327-0944766",
+                contactType: "sales",
+                email: "edgebrainstudios@gmail.com",
+                areaServed: "Worldwide",
+                availableLanguage: "English",
+              },
+              address: {
+                "@type": "PostalAddress",
+                addressLocality: "Lahore",
+                addressCountry: "PK",
+              },
+              sameAs: [],
+            }),
+          }}
+        />
         <SmoothScrollProvider>
           <Navbar />
           <main>{children}</main>
