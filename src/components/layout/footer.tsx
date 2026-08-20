@@ -4,6 +4,39 @@ import { NAV_LINKS, SERVICES, CONTACT, serviceHref } from "@/lib/constants";
 import { ARTICLES, articleHref } from "@/app/insights/articles";
 import { Mail, Phone, MapPin } from "lucide-react";
 
+/**
+ * Second-tier routes that are not primary sections.
+ *
+ * These are the pages the header deliberately does not carry — a location
+ * page and the tools hub. The footer is where they get their site-wide
+ * crawlable link, with anchor text that says what the page is rather than
+ * where it sits. Appended to NAV_LINKS below rather than merged into it,
+ * because NAV_LINKS is what "primary section" means everywhere else.
+ */
+const SECONDARY_LINKS = [
+  { label: "Free tools & calculators", href: "/tools" },
+  { label: "Software development in Lahore", href: "/software-development-lahore" },
+] as const;
+
+/**
+ * Technology-specific service pages.
+ *
+ * They sit under the four disciplines in the Services column, not beside
+ * them: a WordPress migration is web development and an n8n build is AI
+ * automation. Listing them after the four, above "All services", is the
+ * flattest way to show that nesting in a list that has no indentation.
+ */
+const TECHNOLOGY_PAGES = [
+  {
+    label: "WordPress to Next.js migration",
+    href: "/services/wordpress-to-nextjs-migration",
+  },
+  {
+    label: "n8n automation development",
+    href: "/services/n8n-automation-development",
+  },
+] as const;
+
 export function Footer() {
   const year = new Date().getFullYear();
 
@@ -30,7 +63,7 @@ export function Footer() {
               Navigation
             </h3>
             <ul className="space-y-3">
-              {NAV_LINKS.map((link) => (
+              {[...NAV_LINKS, ...SECONDARY_LINKS].map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
@@ -49,7 +82,7 @@ export function Footer() {
               Services
             </h3>
             {/* Each service links to its dedicated page rather than a
-                /services#anchor, so all four are crawlable from every page on
+                /services#anchor, so all six are crawlable from every page on
                 the site and each one accrues its own internal links. */}
             <ul className="space-y-3">
               {SERVICES.map((service) => (
@@ -59,6 +92,16 @@ export function Footer() {
                     className="text-sm text-[var(--color-offwhite)]/70 hover:text-[var(--color-yellow)] transition-colors duration-[var(--duration-fast)]"
                   >
                     {service.title}
+                  </Link>
+                </li>
+              ))}
+              {TECHNOLOGY_PAGES.map((page) => (
+                <li key={page.href}>
+                  <Link
+                    href={page.href}
+                    className="text-sm text-[var(--color-offwhite)]/70 hover:text-[var(--color-yellow)] transition-colors duration-[var(--duration-fast)]"
+                  >
+                    {page.label}
                   </Link>
                 </li>
               ))}

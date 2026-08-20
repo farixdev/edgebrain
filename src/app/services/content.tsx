@@ -76,6 +76,32 @@ const SERVICE_DETAILS = [
   },
 ];
 
+/**
+ * The two technology-specific spokes.
+ *
+ * They are not a fifth and sixth service. Each one nests under a discipline
+ * above — a WordPress replatform is web development, an n8n build is AI
+ * automation — and `parent` is rendered so a reader sees that nesting instead
+ * of having to infer it. This block is what makes the hub a hub: four
+ * disciplines, then the named things people search for inside them.
+ */
+const TECHNOLOGY_PAGES = [
+  {
+    href: "/services/wordpress-to-nextjs-migration",
+    parent: "Sits under web development",
+    linkLabel: "WordPress to Next.js migration",
+    body:
+      "The rebuild is the easy half. The page covers the part that actually breaks a replatform: a redirect map generated from the live permalink structure rather than from memory, canonical and structured-data parity checked against the old site before cutover, the headless-over-WPGraphQL versus move-the-content-out decision, and what the rollback looks like if the first week goes badly.",
+  },
+  {
+    href: "/services/n8n-automation-development",
+    parent: "Sits under AI automation",
+    linkLabel: "n8n automation development",
+    body:
+      "Written for teams who have already chosen the tool and then hit everything past the happy path. Self-hosted deployment in queue mode, credentials and the encryption key, custom nodes when the integration you need does not exist, error branches and retry policy, and what moving a workflow off Zapier or Make actually costs in rebuild time.",
+  },
+];
+
 const ENGAGEMENT_STEPS = [
   {
     number: "01",
@@ -372,6 +398,109 @@ export function ServicesPageContent() {
           </Section>
         );
       })}
+
+      {/* Technology pages — the spokes.
+
+          variant="light" with pt-0 on purpose: the last service section above
+          is also light, so this reads as a continuation of it separated by a
+          hairline rather than as a seventh top-level service. Same pattern as
+          the plain-text index on /insights. */}
+      <Section variant="light" className="pt-0" id="technology-pages">
+        <div className="border-t border-[var(--color-hairline-light)] pt-14 lg:pt-20">
+          <div className="max-w-3xl mb-12">
+            <motion.p
+              className="text-xs uppercase tracking-[0.2em] text-[var(--color-mute)] mb-4 font-medium"
+              data-reveal="fade"
+              initial={false}
+              whileInView={shouldReduceMotion ? {} : { opacity: 1 }}
+              viewport={viewportOnce}
+              transition={{ duration: DURATION.slow }}
+            >
+              Technology pages
+            </motion.p>
+            <motion.h2
+              className="text-display-sm mb-6"
+              data-reveal="y30"
+              initial={false}
+              whileInView={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
+              viewport={viewportOnce}
+              transition={{ duration: DURATION.slow, delay: 0.1 }}
+            >
+              Two of these we get asked for by name
+            </motion.h2>
+            <motion.p
+              className="text-lg text-[var(--color-mute)]"
+              data-reveal="y20"
+              initial={false}
+              whileInView={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
+              viewport={viewportOnce}
+              transition={{ duration: DURATION.slow, delay: 0.2 }}
+            >
+              The four above are how we describe the work. These two are how
+              people ask for it — a specific migration, and a specific tool.
+              They each get their own page because the honest answer is long
+              and particular, not because a longer menu looks better.
+            </motion.p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {TECHNOLOGY_PAGES.map((page, i) => (
+              <motion.div
+                key={page.href}
+                className="rounded-[var(--radius-lg)] border border-[var(--color-hairline-light)] p-8 flex flex-col"
+                data-reveal="y30"
+                initial={false}
+                whileInView={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
+                viewport={viewportOnce}
+                transition={{ duration: DURATION.slow, delay: 0.1 + i * 0.1 }}
+              >
+                <p className="text-xs uppercase tracking-[0.15em] text-[var(--color-mute)] mb-4 font-medium">
+                  {page.parent}
+                </p>
+                <h3 className="text-xl font-medium mb-4">
+                  <Link
+                    href={page.href}
+                    className="underline underline-offset-4 decoration-[var(--color-ink)]/25 hover:decoration-[var(--color-yellow)] transition-colors duration-[var(--duration-fast)]"
+                  >
+                    {page.linkLabel}
+                  </Link>
+                </h3>
+                <p className="text-sm text-[var(--color-ink)]/70 mb-6">
+                  {page.body}
+                </p>
+                <Link
+                  href={page.href}
+                  className="group mt-auto inline-flex items-center gap-2 text-sm font-medium text-[var(--color-ink)] border-b border-[var(--color-ink)]/25 pb-1 self-start hover:border-[var(--color-yellow)] transition-colors duration-[var(--duration-fast)]"
+                >
+                  Read the {page.linkLabel} page
+                  <ArrowRight className="w-4 h-4 transition-transform duration-[var(--duration-fast)] group-hover:translate-x-1" />
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+
+          <motion.p
+            className="text-sm text-[var(--color-mute)] max-w-3xl mt-10"
+            data-reveal="y20"
+            initial={false}
+            whileInView={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
+            viewport={viewportOnce}
+            transition={{ duration: DURATION.slow, delay: 0.2 }}
+          >
+            Both are quoted the same way as everything above: fixed scope, price
+            agreed before anyone starts. If you would rather put your own
+            numbers in first, the{" "}
+            <Link
+              href="/tools/mvp-cost-estimator"
+              className="underline underline-offset-4 decoration-[var(--color-ink)]/30 hover:decoration-[var(--color-ink)] transition-colors duration-[var(--duration-fast)]"
+            >
+              MVP cost estimator
+            </Link>{" "}
+            breaks a build down into line items in the browser, with no email
+            gate.
+          </motion.p>
+        </div>
+      </Section>
 
       {/* How engagements work */}
       <Section variant="dark" noise id="how-engagements-work">

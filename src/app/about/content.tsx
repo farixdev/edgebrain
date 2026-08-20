@@ -75,8 +75,8 @@ export function AboutPageContent() {
           viewport={viewportOnce}
           transition={{ duration: DURATION.slow, delay: 0.1 }}
         >
-          A software house in Lahore with a{" "}
-          <span className="text-[var(--color-yellow)]">sharp edge</span>.
+          How we build, and what we{" "}
+          <span className="text-[var(--color-yellow)]">turn down</span>.
         </motion.h1>
         <motion.p
           className="text-lg text-[var(--color-mute)] max-w-2xl leading-relaxed"
@@ -86,10 +86,18 @@ export function AboutPageContent() {
           viewport={viewportOnce}
           transition={{ duration: DURATION.slow, delay: 0.2 }}
         >
-          EdgeBrain Studios is a small senior team in Lahore, Pakistan, building
-          web apps, mobile apps, and AI automation for founders and product
-          teams worldwide. Fixed scope, quoted before kickoff. A staging URL in
-          week one. Most projects ship in 4 to 8 weeks.
+          EdgeBrain Studios builds web apps, mobile apps, and AI automation for
+          founders and product teams worldwide. Fixed scope, quoted before
+          kickoff. A staging URL in week one. Most projects ship in 4 to 8
+          weeks. This page is about how that runs; the studio&rsquo;s home
+          market, the time-zone arithmetic and the contract mechanics live on{" "}
+          <Link
+            href="/software-development-lahore"
+            className="underline underline-offset-4 decoration-[var(--color-mute)]/50 hover:decoration-[var(--color-ink)] transition-colors duration-[var(--duration-fast)]"
+          >
+            software development in Lahore
+          </Link>
+          .
         </motion.p>
       </Section>
 

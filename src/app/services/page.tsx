@@ -17,7 +17,8 @@ export const metadata: Metadata = {
    * were removed: they belong to /services/web-development and
    * /services/mobile-app-development respectively, and having the hub claim
    * them too put three URLs on one term. "software house in Lahore" is owned
-   * by /about, which is the page that actually answers it.
+   * by /software-development-lahore, which is the page that actually answers
+   * it. /about used to chase the same term and was retitled off it.
    */
   keywords: [
     "custom software development services",

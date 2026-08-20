@@ -153,6 +153,66 @@ export const ARTICLES: Article[] = [
     relatedService: "/services/web-development",
     relatedSlugs: ["in-house-vs-agency-vs-freelancer", "mvp-development-cost"],
   },
+  {
+    slug: "fixed-price-vs-time-and-materials",
+    title: "Fixed price vs time and materials: which contract to sign",
+    seoTitle: "Fixed Price vs Time and Materials 2026",
+    description:
+      "Fixed price is not a discount, it is a risk transfer you pay a buffer for. How the buffer gets sized, what shrinks it, and the change-order clauses to read.",
+    excerpt:
+      "We sell fixed scope, so read this as a hostile witness. The buffer priced into every fixed bid, the change-order mechanics no competitor writes about, and the cases where our own quote is the wrong thing to buy.",
+    category: "Cost & planning",
+    readingMinutes: 11,
+    publishedAt: "2026-08-20",
+    relatedService: "/services/web-development",
+    relatedSlugs: ["mvp-development-cost", "in-house-vs-agency-vs-freelancer"],
+  },
+  {
+    slug: "llm-cost-per-user",
+    title: "What an AI feature actually costs to run per user",
+    seoTitle: "LLM Cost Per User: How to Forecast",
+    description:
+      "What an AI feature costs per user, worked forward from the request path: tokens per turn, cache hit rate, and why a pilot average under-reads the real bill.",
+    excerpt:
+      "The finance posts tell you gross margin matters. This one does the request-path arithmetic that produces it, then explains why the average user is the wrong unit to forecast against.",
+    category: "Cost & planning",
+    readingMinutes: 11,
+    publishedAt: "2026-08-20",
+    relatedService: "/services/ai-consulting",
+    relatedSlugs: ["rag-vs-fine-tuning", "automate-document-processing", "mvp-development-cost"],
+  },
+  {
+    slug: "rewrite-vs-refactor-legacy-app",
+    title: "Rewrite or refactor: how to judge a codebase you inherited",
+    seoTitle: "Rewrite vs Refactor a Legacy Codebase",
+    description:
+      "Rewrite or refactor an inherited codebase? Five signals you can measure in a day, the one case a rewrite is truly justified, and why strangling beats both.",
+    excerpt:
+      "Rewrite-vs-refactor gets argued in the abstract because nobody publishes a way to measure the thing being argued about. Here is one: five signals, one working day, from a clean checkout.",
+    category: "Engineering decisions",
+    readingMinutes: 12,
+    publishedAt: "2026-08-20",
+    relatedService: "/services/web-development",
+    relatedSlugs: [
+      "fixed-price-vs-time-and-materials",
+      "in-house-vs-agency-vs-freelancer",
+      "mvp-development-cost",
+    ],
+  },
+  {
+    slug: "why-your-nextjs-site-is-slow",
+    title: "Why your Next.js site is slow, and which fixes are worth doing",
+    seoTitle: "Why Your Next.js Site Is Slow (2026)",
+    description:
+      "Your Next.js site is slow for one of three reasons. Read field data at p75, map each Core Web Vital to its real cause, and fix them in the order that pays.",
+    excerpt:
+      "Most of this SERP is a list of Next.js APIs presented as if order does not matter. It matters enormously. Diagnosis first, then the fix that survives the next deploy.",
+    category: "Engineering decisions",
+    readingMinutes: 12,
+    publishedAt: "2026-08-20",
+    relatedService: "/services/web-development",
+    relatedSlugs: ["react-native-vs-native", "fixed-price-vs-time-and-materials", "mvp-development-cost"],
+  },
 ];
 
 /** Human labels for the routes used in `relatedService`. */

@@ -18,7 +18,9 @@ export const metadata: Metadata = {
    * in Lahore", "AI automation company in Pakistan"), so /contact competed with
    * the hub and, on the web-development term, with the spoke as well. Those
    * terms belong to the pages that answer them; this page exists to convert.
-   * "software house in Lahore" is owned by /about.
+   * "software house in Lahore" is owned by /software-development-lahore, not
+   * by /about — /about was retitled off the location term because two URLs
+   * were chasing it with near-identical copy.
    */
   keywords: [
     "contact software house in Lahore",

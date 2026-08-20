@@ -6,9 +6,40 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Logo } from "@/components/ui/logo";
 import { ButtonLink } from "@/components/ui/button";
-import { NAV_LINKS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { DURATION, EASE } from "@/lib/motion";
+
+/**
+ * The top nav is deliberately NOT `NAV_LINKS`.
+ *
+ * `NAV_LINKS` is the site's full primary-section list and the footer still
+ * renders all of it. The header has a hard budget: five links plus the CTA is
+ * the point where the row still breathes at the lg breakpoint, and /tools now
+ * has to fit.
+ *
+ * So Contact comes out and Tools goes in. Contact is the one item here that
+ * was already duplicated on screen — the "Start a project" button sits two
+ * centimetres to its right and goes to the same URL, so removing the text link
+ * costs a visitor nothing and costs the crawl nothing (the footer, the CTA,
+ * and every page's closing block all still link /contact).
+ *
+ * Tools sits next to Services rather than at the end, because the estimator is
+ * the same "what can I buy, what does it cost" intent as the service pages,
+ * and Insights/About are the lower-intent tail of the row.
+ *
+ * The rest of the new routes stay out of the header on purpose. Two
+ * technology-specific service pages, a location page and one calculator do not
+ * each deserve a slot in a five-item nav; they are linked from the services
+ * hub, the tools hub, and the footer, which is where a crawler and a visitor
+ * both expect to find the second tier.
+ */
+const TOP_NAV_LINKS = [
+  { label: "Work", href: "/work" },
+  { label: "Services", href: "/services" },
+  { label: "Tools", href: "/tools" },
+  { label: "Insights", href: "/insights" },
+  { label: "About", href: "/about" },
+] as const;
 
 /**
  * A nav item is current for its whole section, not just its index page.
@@ -77,7 +108,7 @@ export function Navbar() {
 
           {/* Desktop links */}
           <div className="hidden lg:flex items-center gap-8">
-            {NAV_LINKS.map((link) => (
+            {TOP_NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -147,7 +178,7 @@ export function Navbar() {
             aria-label="Navigation menu"
           >
             <nav className="flex flex-col items-center gap-8">
-              {NAV_LINKS.map((link, i) => (
+              {TOP_NAV_LINKS.map((link, i) => (
                 <motion.div
                   key={link.href}
                   initial={{ opacity: 0, y: 20 }}
@@ -179,7 +210,7 @@ export function Navbar() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
-                  delay: 0.1 + NAV_LINKS.length * 0.08,
+                  delay: 0.1 + TOP_NAV_LINKS.length * 0.08,
                   duration: DURATION.slow,
                   ease: EASE.standard,
                 }}

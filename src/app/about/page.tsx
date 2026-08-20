@@ -2,17 +2,26 @@ import type { Metadata } from "next";
 import { ORGANIZATION_ID, WEBSITE_ID } from "@/lib/constants";
 import { AboutPageContent } from "./content";
 
+/**
+ * This page used to be titled "About Our Software House in Lahore", which put
+ * it in a straight fight with /software-development-lahore for the same query
+ * while being a worse answer to it. The location page owns the city; this one
+ * owns how the studio works, who it suits, and what it declines. Keep the
+ * Lahore keyword out of the title, the H1 and the OG title here.
+ *
+ * 35 chars; the root layout appends " | EdgeBrain Studios" for 55 rendered.
+ */
 export const metadata: Metadata = {
-  title: "About Our Software House in Lahore",
+  title: "How We Build, and What We Turn Down",
   description:
-    "EdgeBrain Studios is a software house in Lahore building web apps, mobile apps, and AI automation worldwide. Senior engineers, fixed scope, 4 to 8 week builds.",
+    "How EdgeBrain Studios works: the way we scope and price, the risky part built first, what makes a project a good fit, and the work we turn down and why.",
   alternates: {
     canonical: "/about",
   },
   openGraph: {
-    title: "About Our Software House in Lahore | EdgeBrain Studios",
+    title: "How We Build, and What We Turn Down | EdgeBrain Studios",
     description:
-      "A small senior team in Lahore, Pakistan, shipping web apps, mobile apps, and AI automation worldwide. Fixed scope quoted upfront, weekly builds, live in 4 to 8 weeks.",
+      "How the studio runs: fixed scope quoted before kickoff, a staging URL in week one, the risky part built first, and an honest list of the work we decline.",
     url: "/about",
     type: "website",
   },
@@ -38,7 +47,7 @@ const jsonLd = {
       url: "https://edgebrainstudios.com/about",
       name: "About EdgeBrain Studios",
       description:
-        "EdgeBrain Studios is a software house in Lahore, Pakistan, building web applications, mobile apps, and AI automation for founders and lean product teams worldwide. Fixed-scope pricing quoted before kickoff, weekly builds, and delivery in 4 to 8 weeks.",
+        "How EdgeBrain Studios works: fixed-scope pricing quoted before kickoff, weekly builds against a staging URL from week one, the riskiest part of a system built first, and delivery in 4 to 8 weeks. Includes the kinds of work the studio declines and the reasons for each.",
       inLanguage: "en",
       isPartOf: { "@id": WEBSITE_ID },
       mainEntity: { "@id": ORGANIZATION_ID },

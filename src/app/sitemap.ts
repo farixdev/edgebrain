@@ -31,8 +31,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: baseUrl, changeFrequency: "weekly", priority: 1 },
 
-    // Services hub plus the four dedicated service pages. These are the
-    // commercial-intent pages, so they carry the highest priority after home.
+    // Services hub plus the six dedicated service pages — the four core
+    // disciplines and the two technology-specific pages beneath them. These
+    // are the commercial-intent pages, so they carry the highest priority
+    // after home.
     { url: `${baseUrl}/services`, changeFrequency: "monthly", priority: 0.9 },
     {
       url: `${baseUrl}/services/web-development`,
@@ -54,6 +56,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.9,
     },
+    // Technology-specific spokes. Same priority as the four disciplines
+    // because the intent behind them is at least as commercial: somebody
+    // searching "WordPress to Next.js migration" has already decided to buy.
+    {
+      url: `${baseUrl}/services/wordpress-to-nextjs-migration`,
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/services/n8n-automation-development`,
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
 
     { url: `${baseUrl}/contact`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${baseUrl}/work`, changeFrequency: "weekly", priority: 0.8 },
@@ -62,7 +77,26 @@ export default function sitemap(): MetadataRoute.Sitemap {
     // changes as often as /work does and sits at the same priority.
     { url: `${baseUrl}/insights`, changeFrequency: "weekly", priority: 0.8 },
 
+    // The location page. Below the service pages because its intent is
+    // narrower, above /about because it is still a page somebody lands on
+    // while deciding whether to hire.
+    {
+      url: `${baseUrl}/software-development-lahore`,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+
     { url: `${baseUrl}/about`, changeFrequency: "monthly", priority: 0.7 },
+
+    // The estimator outranks its own hub on purpose: the tool is the thing
+    // people search for and link to, and /tools is currently a one-card index
+    // whose job is to be a crawlable parent rather than a destination.
+    {
+      url: `${baseUrl}/tools/mvp-cost-estimator`,
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
+    { url: `${baseUrl}/tools`, changeFrequency: "monthly", priority: 0.6 },
   ];
 
   const projectRoutes: MetadataRoute.Sitemap = CASE_STUDY_SLUGS.map((slug) => ({
@@ -78,7 +112,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
    * the rendered links from ever disagreeing about a URL.
    *
    * lastModified is the publish date, not build time. Stamping every article
-   * with `new Date()` on each deploy tells crawlers six pages changed when
+   * with `new Date()` on each deploy tells crawlers ten pages changed when
    * nothing did, and that signal stops being worth anything quickly.
    */
   const articleRoutes: MetadataRoute.Sitemap = ARTICLES.map((article) => ({

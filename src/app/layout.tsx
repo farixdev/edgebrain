@@ -89,6 +89,15 @@ export const metadata: Metadata = {
  *
  * No SearchAction: there is no /search route, and pointing one at a URL that
  * does not exist is a structured-data violation.
+ *
+ * #organization is declared here and nowhere else. /software-development-lahore
+ * emits a ProfessionalService node carrying this same @id on purpose — same
+ * @id means consumers merge it into this node rather than reading a second,
+ * competing local business at a second URL, which is the standard way a
+ * location page ends up claiming two firms share one phone number. Anything
+ * that page restates must match this node exactly; the one thing it adds is
+ * Lahore to areaServed, which extends the set instead of contradicting it. If
+ * you ever need a genuinely separate entity, give it a different @id.
  */
 const SITE_SCHEMA = {
   "@context": "https://schema.org",
@@ -151,7 +160,21 @@ const SITE_SCHEMA = {
         "React Native",
         "AI automation",
         "Large language model integration",
+        "WordPress to Next.js migration",
+        "n8n workflow automation",
       ],
+      /**
+       * Every entry carries the same @id its own service page declares, so the
+       * catalog entry and the page's Service node merge into one node instead
+       * of standing up an anonymous second copy of each service. `name` is
+       * therefore not free text here — it has to match the page byte for byte,
+       * or the merged node ends up with two competing names.
+       *
+       * Six entries: the four disciplines, then the two technology-specific
+       * pages that sit beneath them (a WordPress replatform is web
+       * development; an n8n build is AI automation). They are listed last for
+       * that reason, not because they matter less.
+       */
       hasOfferCatalog: {
         "@type": "OfferCatalog",
         name: "Software development and AI services",
@@ -160,7 +183,8 @@ const SITE_SCHEMA = {
             "@type": "Offer",
             itemOffered: {
               "@type": "Service",
-              name: "Web Development",
+              "@id": `${SITE.url}/services/web-development#service`,
+              name: "Next.js and React Web Development",
               url: `${SITE.url}/services/web-development`,
             },
           },
@@ -168,6 +192,7 @@ const SITE_SCHEMA = {
             "@type": "Offer",
             itemOffered: {
               "@type": "Service",
+              "@id": `${SITE.url}/services/mobile-app-development#service`,
               name: "Mobile App Development",
               url: `${SITE.url}/services/mobile-app-development`,
             },
@@ -176,7 +201,8 @@ const SITE_SCHEMA = {
             "@type": "Offer",
             itemOffered: {
               "@type": "Service",
-              name: "AI Automation",
+              "@id": `${SITE.url}/services/ai-automation#service`,
+              name: "AI Automation Services",
               url: `${SITE.url}/services/ai-automation`,
             },
           },
@@ -184,8 +210,27 @@ const SITE_SCHEMA = {
             "@type": "Offer",
             itemOffered: {
               "@type": "Service",
+              "@id": `${SITE.url}/services/ai-consulting#service`,
               name: "AI Integration & Consulting",
               url: `${SITE.url}/services/ai-consulting`,
+            },
+          },
+          {
+            "@type": "Offer",
+            itemOffered: {
+              "@type": "Service",
+              "@id": `${SITE.url}/services/wordpress-to-nextjs-migration#service`,
+              name: "WordPress to Next.js Migration",
+              url: `${SITE.url}/services/wordpress-to-nextjs-migration`,
+            },
+          },
+          {
+            "@type": "Offer",
+            itemOffered: {
+              "@type": "Service",
+              "@id": `${SITE.url}/services/n8n-automation-development#service`,
+              name: "n8n Automation Development",
+              url: `${SITE.url}/services/n8n-automation-development`,
             },
           },
         ],
