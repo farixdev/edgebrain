@@ -43,10 +43,14 @@ export function AnimatedText({
     <Tag className={className}>
       {words.map((word, i) => (
         <span key={i} className="inline-block overflow-hidden">
+          {/* The hidden state comes from `[data-reveal="word"]` in globals.css,
+              not from `initial`, so the words are never serialised as
+              `opacity:0` in the SSR HTML. See the scroll-reveal block there. */}
           <motion.span
             className="inline-block"
-            initial={{ y: "100%", opacity: 0 }}
-            whileInView={{ y: "0%", opacity: 1 }}
+            data-reveal="word"
+            initial={false}
+            whileInView={{ y: 0, opacity: 1 }}
             viewport={viewportOnce}
             transition={{
               duration: DURATION.slow,

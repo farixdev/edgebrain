@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Logo } from "@/components/ui/logo";
-import { NAV_LINKS, SERVICES, CONTACT } from "@/lib/constants";
+import { NAV_LINKS, SERVICES, CONTACT, serviceHref } from "@/lib/constants";
+import { ARTICLES, articleHref } from "@/app/insights/articles";
 import { Mail, Phone, MapPin } from "lucide-react";
 
 export function Footer() {
@@ -17,8 +18,12 @@ export function Footer() {
           <Logo size="xl" variant="light" />
         </div>
 
-        {/* Columns */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
+        {/* Columns — three, not four. The fourth was a "Connect" column of
+            LinkedIn / Instagram / Facebook icons all pointing at href="#",
+            which is a self-link: dead for a visitor and wasted crawl signal.
+            Removed pending real profile URLs; to restore, add a fourth column
+            here with the real hrefs and set lg:grid-cols-4 again. */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 lg:gap-16">
           {/* Navigation */}
           <div>
             <h3 className="text-xs uppercase tracking-[0.15em] text-[var(--color-mute)] mb-5 font-medium">
@@ -43,25 +48,42 @@ export function Footer() {
             <h3 className="text-xs uppercase tracking-[0.15em] text-[var(--color-mute)] mb-5 font-medium">
               Services
             </h3>
+            {/* Each service links to its dedicated page rather than a
+                /services#anchor, so all four are crawlable from every page on
+                the site and each one accrues its own internal links. */}
             <ul className="space-y-3">
               {SERVICES.map((service) => (
                 <li key={service.number}>
                   <Link
-                    href={service.href}
+                    href={serviceHref(service)}
                     className="text-sm text-[var(--color-offwhite)]/70 hover:text-[var(--color-yellow)] transition-colors duration-[var(--duration-fast)]"
                   >
                     {service.title}
                   </Link>
                 </li>
               ))}
+              <li>
+                <Link
+                  href="/services"
+                  className="text-sm text-[var(--color-offwhite)]/70 hover:text-[var(--color-yellow)] transition-colors duration-[var(--duration-fast)]"
+                >
+                  All services
+                </Link>
+              </li>
             </ul>
           </div>
 
-          {/* Contact */}
-          <div>
+          {/* Contact — promoted into the space the removed social column
+              freed. Spans the full width at sm so three columns never leave an
+              orphan on the second row. */}
+          <div className="sm:col-span-2 lg:col-span-1">
             <h3 className="text-xs uppercase tracking-[0.15em] text-[var(--color-mute)] mb-5 font-medium">
               Contact
             </h3>
+            <p className="text-sm text-[var(--color-offwhite)]/70 leading-relaxed mb-5 max-w-sm">
+              Send us the problem in two paragraphs. You get a scope and a fixed
+              price back, usually inside two working days.
+            </p>
             <ul className="space-y-3">
               <li>
                 <a
@@ -99,38 +121,50 @@ export function Footer() {
                 {CONTACT.locationDetail}
               </li>
             </ul>
-          </div>
-
-          {/* Social */}
-          <div>
-            <h3 className="text-xs uppercase tracking-[0.15em] text-[var(--color-mute)] mb-5 font-medium">
-              Connect
-            </h3>
-            <div className="flex gap-4">
-              {[
-                { label: "LinkedIn", href: "#", icon: "M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.968v16h4.969v-8.399c0-4.67 6.029-5.052 6.029 0v8.399h4.988v-10.131c0-7.88-8.922-7.593-11.018-3.714v-2.155z" },
-                { label: "Instagram", href: "#", icon: "M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" },
-                { label: "Facebook", href: "#", icon: "M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385h-3.047v-3.47h3.047v-2.642c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953h-1.514c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385c5.738-.9 10.126-5.864 10.126-11.854z" },
-              ].map((social) => (
-                <a
-                  key={social.label}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={social.label}
-                  className="w-10 h-10 rounded-full border border-[var(--color-hairline-dark)] flex items-center justify-center text-[var(--color-offwhite)]/50 hover:text-[var(--color-yellow)] hover:border-[var(--color-yellow)] transition-colors duration-[var(--duration-fast)]"
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                    <path d={social.icon} />
-                  </svg>
-                </a>
-              ))}
-            </div>
+            <Link
+              href="/contact"
+              className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-[var(--color-yellow)] underline decoration-[var(--color-yellow)] decoration-2 underline-offset-4 hover:gap-3 transition-all duration-[var(--duration-fast)]"
+            >
+              Start a project with EdgeBrain Studios
+            </Link>
           </div>
         </div>
 
+        {/* Insights — a full-width band rather than a fourth column, so the
+            three-column grid above keeps its balance and the Contact block
+            keeps its width. Every entry is derived from the article registry
+            in src/app/insights/articles.ts, so a new piece appears here (and
+            in the sitemap) without anyone remembering to edit this file. The
+            anchor text is the article title, which is the descriptive version
+            of itself — no "read more" links. */}
+        <div className="mt-16 pt-8 border-t border-[var(--color-hairline-dark)]">
+          <div className="flex flex-wrap items-baseline gap-x-6 gap-y-2 mb-6">
+            <h3 className="text-xs uppercase tracking-[0.15em] text-[var(--color-mute)] font-medium">
+              Insights
+            </h3>
+            <Link
+              href="/insights"
+              className="text-xs font-medium text-[var(--color-yellow)] underline decoration-[var(--color-yellow)]/50 underline-offset-4 hover:decoration-[var(--color-yellow)] transition-colors duration-[var(--duration-fast)]"
+            >
+              All insights
+            </Link>
+          </div>
+          <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-3">
+            {ARTICLES.map((article) => (
+              <li key={article.slug}>
+                <Link
+                  href={articleHref(article.slug)}
+                  className="text-sm text-[var(--color-offwhite)]/70 hover:text-[var(--color-yellow)] transition-colors duration-[var(--duration-fast)]"
+                >
+                  {article.title}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
         {/* Bottom bar */}
-        <div className="mt-16 pt-8 border-t border-[var(--color-hairline-dark)] flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="mt-12 pt-8 border-t border-[var(--color-hairline-dark)] flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-[var(--color-mute)]">
             &copy; {year} EdgeBrain Studios. All rights reserved.
           </p>

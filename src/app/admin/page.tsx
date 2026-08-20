@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 
 /* ------------------------------------------------------------------ */
 /*  Types matching content.json shape                                  */
@@ -21,6 +21,7 @@ interface Project {
   description: string;
   color: string;
   accent: string;
+  thumbnail?: string;
   placeholder?: boolean;
 }
 
@@ -119,6 +120,12 @@ export default function AdminPage() {
   const [toast, setToast] = useState<{ msg: string; ok: boolean } | null>(null);
   const [saving, setSaving] = useState(false);
 
+  /* ---- Toast ---------------------------------------------------- */
+  const showToast = useCallback((msg: string, ok: boolean) => {
+    setToast({ msg, ok });
+    setTimeout(() => setToast(null), 3000);
+  }, []);
+
   /* ---- Fetch content -------------------------------------------- */
   const fetchContent = useCallback(async () => {
     setLoading(true);
@@ -132,7 +139,7 @@ export default function AdminPage() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [showToast]);
 
   /* ---- Login ---------------------------------------------------- */
   const handleLogin = async () => {
@@ -167,10 +174,9 @@ export default function AdminPage() {
     }
   };
 
-  /* Load content once authed */
-  useEffect(() => {
-    if (authed && !content) fetchContent();
-  }, [authed, content, fetchContent]);
+  /* Content is populated directly by handleLogin (it already fetches the
+     payload it validates against), and can be refreshed on demand via the
+     Reload button, so no load-on-mount effect is needed. */
 
   /* ---- Save ----------------------------------------------------- */
   const handleSave = async () => {
@@ -198,12 +204,6 @@ export default function AdminPage() {
     } finally {
       setSaving(false);
     }
-  };
-
-  /* ---- Toast ---------------------------------------------------- */
-  const showToast = (msg: string, ok: boolean) => {
-    setToast({ msg, ok });
-    setTimeout(() => setToast(null), 3000);
   };
 
   /* ---- Helpers for updating nested state ------------------------ */
@@ -455,6 +455,47 @@ export default function AdminPage() {
                 <input className={INPUT} value={p.accent} onChange={(e) => updateProject(i, "accent", e.target.value)} />
                 <span className="w-8 h-8 rounded border border-white/10 shrink-0" style={{ backgroundColor: p.accent }} />
               </div>
+            </div>
+          </div>
+          <div>
+            <label className={LABEL}>Thumbnail</label>
+            <div className="flex gap-3 items-center">
+              {p.thumbnail ? (
+                <img src={p.thumbnail} alt="" className="w-20 h-14 rounded object-cover border border-white/10" />
+              ) : (
+                <div className="w-20 h-14 rounded border border-dashed border-white/20 flex items-center justify-center text-white/20 text-xs">No img</div>
+              )}
+              <label className={`${BTN_SECONDARY} cursor-pointer`}>
+                Upload
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file || !p.slug) return;
+                    const fd = new FormData();
+                    fd.append("file", file);
+                    fd.append("slug", p.slug);
+                    try {
+                      const res = await fetch("/api/admin/upload", {
+                        method: "POST",
+                        headers: { "x-admin-email": email, "x-admin-password": password },
+                        body: fd,
+                      });
+                      if (!res.ok) throw new Error("Upload failed");
+                      const data = await res.json();
+                      updateProject(i, "thumbnail", data.url);
+                      showToast("Image uploaded", true);
+                    } catch {
+                      showToast("Upload failed", false);
+                    }
+                  }}
+                />
+              </label>
+              {p.thumbnail && (
+                <button onClick={() => updateProject(i, "thumbnail", "")} className="text-xs text-red-400 hover:text-red-300">Remove</button>
+              )}
             </div>
           </div>
         </div>

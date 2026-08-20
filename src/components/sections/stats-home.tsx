@@ -6,6 +6,15 @@ import { Section } from "@/components/ui/section";
 import { STATS } from "@/lib/constants";
 import { DURATION, EASE, viewportOnce } from "@/lib/motion";
 
+/**
+ * Seeded with `target`, not 0.
+ *
+ * The state used to start at 0 and only move once `useInView` fired, so the
+ * served HTML read `<span>0+</span> Projects Shipped` — every crawler and AI
+ * fetcher that does not execute JS saw a wall of zeroes. Seeding with the real
+ * figure puts the correct number in the SSR output; the count-up still runs
+ * from 0 on the client once the section scrolls into view.
+ */
 function CountUp({
   target,
   suffix,
@@ -15,17 +24,20 @@ function CountUp({
   suffix: string;
   inView: boolean;
 }) {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(target);
   const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
     if (!inView) return;
-    if (shouldReduceMotion) {
-      setCount(target);
-      return;
-    }
 
-    let start = 0;
+    let frame = 0;
+
+    // `count` is already seeded with `target`, so there is nothing to do when
+    // the visitor has asked for less motion — the correct figure is on screen
+    // (and in the SSR HTML) from the first paint.
+    if (shouldReduceMotion) return;
+
+    const start = 0;
     const duration = 2000;
     const startTime = performance.now();
 
@@ -37,10 +49,11 @@ function CountUp({
 
       setCount(Number.isInteger(target) ? Math.round(current) : parseFloat(current.toFixed(1)));
 
-      if (progress < 1) requestAnimationFrame(tick);
+      if (progress < 1) frame = requestAnimationFrame(tick);
     }
 
-    requestAnimationFrame(tick);
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
   }, [inView, target, shouldReduceMotion]);
 
   return (
@@ -66,7 +79,8 @@ export function StatsHome() {
           <motion.div
             key={stat.label}
             className="text-center"
-            initial={shouldReduceMotion ? {} : { opacity: 0, y: 30 }}
+            data-reveal="y30"
+            initial={false}
             whileInView={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
             viewport={viewportOnce}
             transition={{
@@ -84,6 +98,18 @@ export function StatsHome() {
           </motion.div>
         ))}
       </div>
+
+      {/* Every figure above is either a term we commit to in writing or a count
+          of something published on this site. The section previously carried
+          invented numbers — "12+ Projects Shipped", "98% Client Satisfaction",
+          "99.9% Uptime" — none of which could be substantiated, and the
+          satisfaction figure contradicted the fact that the site had no real
+          client testimonials at all. */}
+      <p className="mt-10 text-sm text-[var(--color-mute)] max-w-2xl">
+        Delivery window, reply time, and the post-launch fix period are terms we
+        put in the contract. The case study count is what is published on this
+        site. We do not publish client-outcome statistics we cannot attribute.
+      </p>
     </Section>
   );
 }

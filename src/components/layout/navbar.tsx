@@ -10,10 +10,29 @@ import { NAV_LINKS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { DURATION, EASE } from "@/lib/motion";
 
+/**
+ * A nav item is current for its whole section, not just its index page.
+ * /insights has six article routes under it and /work and /services each have
+ * their own children; matching on equality alone left the underline off on
+ * every one of them, which is the case a visitor most needs it in.
+ */
+function isCurrentSection(pathname: string, href: string): boolean {
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
+
+  /* Close the mobile menu whenever the route changes (covers browser
+     back/forward as well as in-menu clicks). Adjusting state during render
+     is the React-recommended alternative to a setState-in-effect. */
+  const [lastPathname, setLastPathname] = useState(pathname);
+  if (pathname !== lastPathname) {
+    setLastPathname(pathname);
+    setMobileOpen(false);
+  }
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
@@ -21,10 +40,6 @@ export function Navbar() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
-  useEffect(() => {
-    setMobileOpen(false);
-  }, [pathname]);
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
@@ -70,10 +85,13 @@ export function Navbar() {
                   "relative text-sm font-medium transition-colors duration-[var(--duration-fast)]",
                   "after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:bg-[var(--color-yellow)]",
                   "after:transition-all after:duration-[var(--duration-base)] after:ease-[var(--ease-standard)]",
-                  pathname === link.href
+                  isCurrentSection(pathname, link.href)
                     ? "text-[var(--color-ink)] after:w-full"
                     : "text-[var(--color-mute)] hover:text-[var(--color-ink)] after:w-0 hover:after:w-full"
                 )}
+                aria-current={
+                  isCurrentSection(pathname, link.href) ? "page" : undefined
+                }
               >
                 {link.label}
               </Link>
@@ -144,10 +162,13 @@ export function Navbar() {
                     href={link.href}
                     className={cn(
                       "text-display-md transition-colors",
-                      pathname === link.href
+                      isCurrentSection(pathname, link.href)
                         ? "text-[var(--color-ink)]"
                         : "text-[var(--color-mute)] hover:text-[var(--color-ink)]"
                     )}
+                    aria-current={
+                      isCurrentSection(pathname, link.href) ? "page" : undefined
+                    }
                     onClick={() => setMobileOpen(false)}
                   >
                     {link.label}

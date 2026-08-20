@@ -12,7 +12,8 @@ export function PhilosophyHome() {
       <div className="max-w-4xl mx-auto text-center">
         <motion.blockquote
           className="text-display-lg lg:text-display-xl"
-          initial={shouldReduceMotion ? {} : { opacity: 0, y: 40 }}
+          data-reveal="y40"
+          initial={false}
           whileInView={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
           viewport={viewportOnce}
           transition={{ duration: DURATION.slower, ease: EASE.standard }}

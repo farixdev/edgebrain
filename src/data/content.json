@@ -13,28 +13,28 @@
       "title": "Web Development",
       "description": "Performant, responsive web applications built with modern frameworks.",
       "detail": "From marketing sites to complex platforms — we build fast, accessible, and scalable web experiences using Next.js, React, and TypeScript.",
-      "href": "/services#web-development"
+      "href": "/services/web-development"
     },
     {
       "number": "02",
       "title": "Mobile Apps",
       "description": "Cross-platform mobile experiences that feel native.",
       "detail": "iOS and Android apps built with React Native and Flutter. Smooth animations, offline-first architecture, and seamless backend integration.",
-      "href": "/services#mobile-apps"
+      "href": "/services/mobile-app-development"
     },
     {
       "number": "03",
       "title": "AI Automation",
       "description": "Intelligent systems that eliminate manual workflows.",
       "detail": "Custom AI pipelines, workflow automation, and intelligent agents that save time and reduce errors across your operations.",
-      "href": "/services#ai-automation"
+      "href": "/services/ai-automation"
     },
     {
       "number": "04",
       "title": "AI Integration & Consulting",
       "description": "Strategic AI adoption tailored to your business.",
       "detail": "We help you identify where AI fits, build proof-of-concepts, and integrate large language models and machine learning into your existing stack.",
-      "href": "/services#ai-consulting"
+      "href": "/services/ai-consulting"
     }
   ],
   "projects": [
@@ -45,6 +45,7 @@
       "description": "Our own portfolio — built with Next.js, GSAP, and R3F.",
       "color": "#1a1a1a",
       "accent": "#FFD400",
+      "thumbnail": "",
       "placeholder": false
     },
     {
@@ -54,7 +55,9 @@
       "description": "Intelligent document processing pipeline for enterprise.",
       "color": "#0f1923",
       "accent": "#4A9EFF",
-      "placeholder": true
+      "thumbnail": "",
+      "placeholder": true,
+      "disclosure": "Reference build — architecture we ship, not a named client engagement."
     },
     {
       "slug": "pulse-mobile",
@@ -63,7 +66,9 @@
       "description": "Cross-platform health tracking with real-time sync.",
       "color": "#1a0f23",
       "accent": "#9B59B6",
-      "placeholder": true
+      "thumbnail": "",
+      "placeholder": true,
+      "disclosure": "Reference build — architecture we ship, not a named client engagement."
     }
   ],
   "processSteps": [
@@ -90,70 +95,27 @@
   ],
   "stats": [
     {
-      "value": 12,
-      "suffix": "+",
-      "label": "Projects Shipped"
-    },
-    {
-      "value": 98,
-      "suffix": "%",
-      "label": "Client Satisfaction"
-    },
-    {
       "value": 4,
-      "suffix": " weeks",
-      "label": "Avg. Delivery"
+      "suffix": "–8 weeks",
+      "label": "Typical delivery"
     },
     {
-      "value": 99.9,
-      "suffix": "%",
-      "label": "Uptime"
+      "value": 24,
+      "suffix": " hours",
+      "label": "Reply to a new enquiry"
+    },
+    {
+      "value": 30,
+      "suffix": " days",
+      "label": "Post-launch bug fixes included"
+    },
+    {
+      "value": 3,
+      "suffix": "",
+      "label": "Published case studies"
     }
   ],
-  "reviews": [
-    {
-      "quote": "Their AI integration work saved our team 20+ hours a week. Clear communication, sharp execution.",
-      "name": "Marcus Rivera",
-      "role": "CTO",
-      "company": "DataFlow",
-      "placeholder": true
-    },
-    {
-      "quote": "EdgeBrain delivered a platform that exceeded our expectations — fast, polished, and exactly what our users needed.",
-      "name": "Sarah Chen",
-      "role": "Head of Product",
-      "company": "TechCorp",
-      "placeholder": true
-    },
-    {
-      "quote": "We needed a partner who could move fast without cutting corners. EdgeBrain was exactly that.",
-      "name": "Aisha Patel",
-      "role": "Founder",
-      "company": "NovaBuild",
-      "placeholder": true
-    },
-    {
-      "quote": "The mobile app they built handles 50k+ daily users without breaking a sweat. Solid engineering.",
-      "name": "James Okonkwo",
-      "role": "VP Engineering",
-      "company": "HealthSync",
-      "placeholder": true
-    },
-    {
-      "quote": "They turned our outdated website into a conversion machine. Bounce rate dropped 40% in the first month.",
-      "name": "Emily Zhao",
-      "role": "Marketing Director",
-      "company": "Amplify",
-      "placeholder": true
-    },
-    {
-      "quote": "EdgeBrain feels like an extension of our team. Responsive, transparent, and technically sharp.",
-      "name": "David Larsson",
-      "role": "CEO",
-      "company": "Nordic Digital",
-      "placeholder": true
-    }
-  ],
+  "reviews": [],
   "faqs": [
     {
       "question": "What services does EdgeBrain Studios offer?",

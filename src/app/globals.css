@@ -149,6 +149,49 @@ body {
   padding-right: var(--gutter);
 }
 
+/* ─── Scroll reveal ───────────────────────────────────────────────────────
+   The hidden half of an entrance animation must never be in the HTML we
+   serve. Framer Motion serialises an `initial` prop as an inline style during
+   SSR, and `useReducedMotion()` is false on the server, so `initial={{opacity:
+   0}}` shipped every heading and paragraph to crawlers as invisible text.
+
+   So the hidden state lives here instead, behind an `html.js-reveal` class
+   that is only ever added by the inline script in the root layout. A client
+   that does not run JavaScript — every non-rendering crawler and AI fetcher —
+   never gets the class, and therefore never gets hidden text.
+
+   Elements opt in with `data-reveal="<variant>"` and keep `whileInView` +
+   `initial={false}`. Motion reads the computed opacity/transform as the
+   animation origin (see HTMLVisualElement.readValueFromInstance), so the
+   reveal plays exactly as before, and the inline styles Motion writes while
+   animating outrank these rules.
+
+   If the JS bundle never arrives, the failsafe timer in the layout script
+   removes the class and the content becomes visible anyway. */
+@media (prefers-reduced-motion: no-preference) {
+  html.js-reveal [data-reveal] {
+    opacity: 0;
+  }
+  html.js-reveal [data-reveal="y10"] {
+    transform: translateY(10px);
+  }
+  html.js-reveal [data-reveal="y16"] {
+    transform: translateY(16px);
+  }
+  html.js-reveal [data-reveal="y20"] {
+    transform: translateY(20px);
+  }
+  html.js-reveal [data-reveal="y30"] {
+    transform: translateY(30px);
+  }
+  html.js-reveal [data-reveal="y40"] {
+    transform: translateY(40px);
+  }
+  html.js-reveal [data-reveal="word"] {
+    transform: translateY(100%);
+  }
+}
+
 /* ─── Reduced motion ─── */
 @media (prefers-reduced-motion: reduce) {
   *,

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useSyncExternalStore } from "react";
 import dynamic from "next/dynamic";
 import { motion, useReducedMotion } from "framer-motion";
 import { ButtonLink } from "@/components/ui/button";
@@ -32,15 +32,22 @@ function ServicesMarquee() {
 }
 
 function useMediaQuery(query: string) {
-  const [matches, setMatches] = useState(false);
-  useEffect(() => {
-    const mql = window.matchMedia(query);
-    setMatches(mql.matches);
-    const handler = (e: MediaQueryListEvent) => setMatches(e.matches);
-    mql.addEventListener("change", handler);
-    return () => mql.removeEventListener("change", handler);
-  }, [query]);
-  return matches;
+  const subscribe = useCallback(
+    (onStoreChange: () => void) => {
+      const mql = window.matchMedia(query);
+      mql.addEventListener("change", onStoreChange);
+      return () => mql.removeEventListener("change", onStoreChange);
+    },
+    [query]
+  );
+
+  /* Server snapshot is `false` so the SSR markup matches the pre-hydration
+     client render; the real match is picked up on the first client read. */
+  return useSyncExternalStore(
+    subscribe,
+    () => window.matchMedia(query).matches,
+    () => false
+  );
 }
 
 export function Hero() {
@@ -87,7 +94,8 @@ export function Hero() {
 
           <motion.p
             className="text-lg lg:text-xl text-[var(--color-mute)] max-w-lg mb-10"
-            initial={shouldReduceMotion ? {} : { opacity: 0, y: 20 }}
+            data-reveal="y20"
+            initial={false}
             whileInView={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
             viewport={viewportOnce}
             transition={{
@@ -102,7 +110,8 @@ export function Hero() {
 
           <motion.div
             className="flex flex-wrap gap-4"
-            initial={shouldReduceMotion ? {} : { opacity: 0, y: 20 }}
+            data-reveal="y20"
+            initial={false}
             whileInView={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
             viewport={viewportOnce}
             transition={{

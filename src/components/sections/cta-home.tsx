@@ -13,7 +13,8 @@ export function CTAHome() {
       <div className="max-w-3xl mx-auto text-center">
         <motion.h2
           className="text-display-xl mb-8"
-          initial={shouldReduceMotion ? {} : { opacity: 0, y: 40 }}
+          data-reveal="y40"
+          initial={false}
           whileInView={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
           viewport={viewportOnce}
           transition={{ duration: DURATION.slower, ease: EASE.standard }}
@@ -21,7 +22,8 @@ export function CTAHome() {
           Let&rsquo;s build something sharp.
         </motion.h2>
         <motion.div
-          initial={shouldReduceMotion ? {} : { opacity: 0, y: 20 }}
+          data-reveal="y20"
+          initial={false}
           whileInView={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
           viewport={viewportOnce}
           transition={{

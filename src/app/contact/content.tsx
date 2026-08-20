@@ -1,12 +1,54 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { Section } from "@/components/ui/section";
+import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { Button } from "@/components/ui/button";
 import { CONTACT } from "@/lib/constants";
 import { DURATION, EASE, viewportOnce } from "@/lib/motion";
 import { Phone, Mail, MapPin, Check } from "lucide-react";
+
+const NEXT_STEPS = [
+  {
+    number: "01",
+    title: "A human reads it",
+    timing: "Within 24 hours",
+    body: "One of the two engineers who would build the thing, not a sales rep and not an autoresponder. If your message lands outside our hours, it is answered the next business morning in Lahore.",
+  },
+  {
+    number: "02",
+    title: "We scope it in writing",
+    timing: "Within 2 business days",
+    body: "You get a written scope, a fixed price, and a ship date. Where the brief is thin, we ask two or three specific questions rather than booking a call to extract them. If the work is not a fit for us, we say so and name someone who is better placed.",
+  },
+  {
+    number: "03",
+    title: "You decide, then we start",
+    timing: "Kickoff within a week",
+    body: "Approve the scope and we open the repo, the shared Slack channel, and a staging URL in week one. Payment runs 40% at kickoff, 40% at the midpoint build, and 20% at handover. Nothing is committed before you sign.",
+  },
+];
+
+const WHAT_TO_INCLUDE = [
+  {
+    label: "What you are building, in one paragraph",
+    body: "The product, who uses it, and the one job it has to do well. A link to a competitor doing something similar is worth more than a page of description.",
+  },
+  {
+    label: "What already exists",
+    body: "A repo, a Figma file, an API, a spreadsheet holding the whole business together, or nothing at all. All four are fine answers. It changes the estimate more than anything else you can tell us.",
+  },
+  {
+    label: "Your deadline and what drives it",
+    body: "A demo day, a funding round, a contract renewal, a competitor launch. The reason behind the date tells us what can be cut and what cannot.",
+  },
+  {
+    label: "A budget range",
+    body: "Even a rough band. It is not a negotiation tactic, it is how we tell you in the first reply whether we can build what you want for what you have, or which parts to stage across two phases.",
+  },
+];
 
 interface FormData {
   name: string;
@@ -100,12 +142,14 @@ export function ContactPageContent() {
   return (
     <>
       <Section variant="light" className="pt-40 lg:pt-48">
+        <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Contact" }]} />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-20">
           {/* Left: Form */}
           <div>
             <motion.h1
               className="text-display-xl mb-4"
-              initial={shouldReduceMotion ? {} : { opacity: 0, y: 30 }}
+              data-reveal="y30"
+              initial={false}
               whileInView={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
               viewport={viewportOnce}
               transition={{ duration: DURATION.slow }}
@@ -113,14 +157,29 @@ export function ContactPageContent() {
               Let&rsquo;s build something.
             </motion.h1>
             <motion.p
-              className="text-[var(--color-mute)] mb-10"
-              initial={shouldReduceMotion ? {} : { opacity: 0, y: 20 }}
+              className="text-[var(--color-mute)] mb-6"
+              data-reveal="y20"
+              initial={false}
               whileInView={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
               viewport={viewportOnce}
               transition={{ duration: DURATION.slow, delay: 0.1 }}
             >
-              Tell us about your project. We&rsquo;ll get back to you within
-              24 hours.
+              Tell us what you&rsquo;re building. A senior engineer reads every
+              message and replies within 24 hours on a business day. If the
+              scope is clear enough to price, you get a fixed quote and a ship
+              date within two business days.
+            </motion.p>
+            <motion.p
+              className="text-sm text-[var(--color-mute)] mb-10 leading-relaxed"
+              data-reveal="y20"
+              initial={false}
+              whileInView={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
+              viewport={viewportOnce}
+              transition={{ duration: DURATION.slow, delay: 0.15 }}
+            >
+              No sales sequence, no discovery deck, no 20-minute call to
+              qualify you. If we&rsquo;re the wrong fit, we&rsquo;ll say so in
+              the first reply and point you somewhere better.
             </motion.p>
 
             {submitted ? (
@@ -134,15 +193,19 @@ export function ContactPageContent() {
                   <Check size={28} className="text-[var(--color-ink)]" />
                 </div>
                 <h2 className="text-display-sm mb-2">Message sent.</h2>
-                <p className="text-sm text-[var(--color-mute)]">
-                  We&rsquo;ll be in touch soon.
+                <p className="text-sm text-[var(--color-mute)] max-w-sm">
+                  An engineer reads it and replies within 24 hours on a
+                  business day. If the scope is clear, the reply includes a
+                  fixed price and a ship date. Need it faster? Message us on
+                  WhatsApp.
                 </p>
               </motion.div>
             ) : (
               <motion.form
                 onSubmit={handleSubmit}
                 className="space-y-5"
-                initial={shouldReduceMotion ? {} : { opacity: 0, y: 20 }}
+                data-reveal="y20"
+                initial={false}
                 whileInView={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
                 viewport={viewportOnce}
                 transition={{ duration: DURATION.slow, delay: 0.2 }}
@@ -223,7 +286,7 @@ export function ContactPageContent() {
                     id="details"
                     rows={5}
                     className={`${inputStyles} resize-none`}
-                    placeholder="Tell us about your project — what you need, timeline, and any other details."
+                    placeholder="What you are building, what already exists (repo, Figma, API, spreadsheet), and the deadline you are working to."
                     value={form.details}
                     onChange={(e) => updateField("details", e.target.value)}
                     aria-invalid={!!errors.details}
@@ -278,7 +341,8 @@ export function ContactPageContent() {
           {/* Right: Contact info */}
           <motion.div
             className="lg:pt-24"
-            initial={shouldReduceMotion ? {} : { opacity: 0, y: 30 }}
+            data-reveal="y30"
+            initial={false}
             whileInView={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
             viewport={viewportOnce}
             transition={{ duration: DURATION.slow, delay: 0.3 }}
@@ -363,15 +427,257 @@ export function ContactPageContent() {
               </div>
             </div>
 
-            <div className="mt-12 p-5 rounded-[var(--radius-md)] bg-[var(--color-ink)]/[0.03] border border-[var(--color-hairline-light)]">
+            <div className="mt-12 p-5 rounded-[var(--radius-md)] bg-[var(--color-ink)]/[0.03] border border-[var(--color-hairline-light)] space-y-3">
               <p className="text-sm text-[var(--color-mute)]">
                 <span className="text-[var(--color-ink)] font-medium">
-                  Typical response time:
+                  Response time:
                 </span>{" "}
-                within 24 hours on business days.
+                within 24 hours on business days. Fixed quote within two
+                business days once scope is clear.
+              </p>
+              <p className="text-sm text-[var(--color-mute)]">
+                <span className="text-[var(--color-ink)] font-medium">
+                  Overlap hours:
+                </span>{" "}
+                Lahore is UTC+5. We hold 6pm to 10pm local open every working
+                day, which is 9am to 1pm in New York and a full working
+                afternoon in London.
+              </p>
+              <p className="text-sm text-[var(--color-mute)]">
+                <span className="text-[var(--color-ink)] font-medium">
+                  In a hurry?
+                </span>{" "}
+                WhatsApp is the fastest route. Most messages get an answer the
+                same day.
               </p>
             </div>
           </motion.div>
+        </div>
+      </Section>
+
+      {/* What happens next */}
+      <Section variant="dark" noise>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+          <div className="lg:col-span-5">
+            <motion.p
+              className="text-xs uppercase tracking-[0.2em] text-[var(--color-yellow)] mb-4 font-medium"
+              data-reveal="fade"
+              initial={false}
+              whileInView={shouldReduceMotion ? {} : { opacity: 1 }}
+              viewport={viewportOnce}
+              transition={{ duration: DURATION.slow }}
+            >
+              After you hit send
+            </motion.p>
+            <motion.h2
+              className="text-display-lg"
+              data-reveal="y30"
+              initial={false}
+              whileInView={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
+              viewport={viewportOnce}
+              transition={{ duration: DURATION.slow, delay: 0.1 }}
+            >
+              Three steps, then a{" "}
+              <span className="text-[var(--color-yellow)]">number</span>.
+            </motion.h2>
+            <motion.p
+              className="mt-6 text-base text-[var(--color-offwhite)]/60 leading-relaxed max-w-md"
+              data-reveal="y20"
+              initial={false}
+              whileInView={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
+              viewport={viewportOnce}
+              transition={{ duration: DURATION.slow, delay: 0.2 }}
+            >
+              You are not entering a nurture campaign. The whole point of this
+              form is to get you a scope, a price, and a date fast enough that
+              you can compare us against the other two vendors on your list.
+            </motion.p>
+          </div>
+
+          <div className="lg:col-span-7 space-y-0">
+            {NEXT_STEPS.map((item, i) => (
+              <motion.div
+                key={item.title}
+                className="border-t border-[var(--color-hairline-dark)] py-8 grid grid-cols-1 sm:grid-cols-12 gap-3 sm:gap-6"
+                data-reveal="y20"
+                initial={false}
+                whileInView={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
+                viewport={viewportOnce}
+                transition={{
+                  duration: DURATION.slow,
+                  ease: EASE.standard,
+                  delay: i * 0.1,
+                }}
+              >
+                <div className="sm:col-span-4">
+                  <p className="text-sm text-[var(--color-yellow)] font-medium mb-1">
+                    {item.number}
+                  </p>
+                  <h3 className="text-lg font-semibold">{item.title}</h3>
+                  <p className="text-xs uppercase tracking-[0.15em] text-[var(--color-mute)] mt-1">
+                    {item.timing}
+                  </p>
+                </div>
+                <p className="sm:col-span-8 text-sm lg:text-base text-[var(--color-offwhite)]/60 leading-relaxed">
+                  {item.body}
+                </p>
+              </motion.div>
+            ))}
+            <div className="border-t border-[var(--color-hairline-dark)]" />
+          </div>
+        </div>
+
+        {/* What to include */}
+        <div className="mt-20 lg:mt-24 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+          <div className="lg:col-span-5">
+            <motion.h2
+              className="text-display-sm lg:text-display-md"
+              data-reveal="y30"
+              initial={false}
+              whileInView={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
+              viewport={viewportOnce}
+              transition={{ duration: DURATION.slow }}
+            >
+              Four lines that get you a real answer
+            </motion.h2>
+            <motion.p
+              className="mt-4 text-sm lg:text-base text-[var(--color-offwhite)]/60 leading-relaxed max-w-md"
+              data-reveal="y20"
+              initial={false}
+              whileInView={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
+              viewport={viewportOnce}
+              transition={{ duration: DURATION.slow, delay: 0.1 }}
+            >
+              A three-word enquiry gets a reply asking for details, which costs
+              us both two days. Include these four things and the first reply
+              can carry an estimate instead of a question.
+            </motion.p>
+          </div>
+
+          <ul className="lg:col-span-7 space-y-6">
+            {WHAT_TO_INCLUDE.map((item, i) => (
+              <motion.li
+                key={item.label}
+                className="border-t border-[var(--color-hairline-dark)] pt-6"
+                data-reveal="y20"
+                initial={false}
+                whileInView={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
+                viewport={viewportOnce}
+                transition={{
+                  duration: DURATION.slow,
+                  ease: EASE.standard,
+                  delay: i * 0.08,
+                }}
+              >
+                <h3 className="text-base font-medium mb-2">{item.label}</h3>
+                <p className="text-sm text-[var(--color-offwhite)]/60 leading-relaxed">
+                  {item.body}
+                </p>
+              </motion.li>
+            ))}
+          </ul>
+        </div>
+      </Section>
+
+      {/* Local + worldwide */}
+      <Section variant="light">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+          <div className="lg:col-span-5">
+            <motion.p
+              className="text-xs uppercase tracking-[0.2em] text-[var(--color-mute)] mb-4 font-medium"
+              data-reveal="fade"
+              initial={false}
+              whileInView={shouldReduceMotion ? {} : { opacity: 1 }}
+              viewport={viewportOnce}
+              transition={{ duration: DURATION.slow }}
+            >
+              Where we are
+            </motion.p>
+            <motion.h2
+              className="text-display-md"
+              data-reveal="y30"
+              initial={false}
+              whileInView={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
+              viewport={viewportOnce}
+              transition={{ duration: DURATION.slow, delay: 0.1 }}
+            >
+              A software house in Lahore. Most of our clients have never been
+              here.
+            </motion.h2>
+          </div>
+
+          <div className="lg:col-span-7 space-y-5 text-sm lg:text-base text-[var(--color-mute)] leading-relaxed">
+            <motion.p
+              data-reveal="y20"
+              initial={false}
+              whileInView={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
+              viewport={viewportOnce}
+              transition={{ duration: DURATION.slow, delay: 0.1 }}
+            >
+              EdgeBrain Studios is a software company in Lahore, Pakistan. We
+              work with founders in Karachi and Islamabad the same way we work
+              with teams in London, Berlin, Toronto, Dubai, and across the US:
+              a shared Slack channel, a staging URL, and a build note every
+              Friday. If you are in Lahore and would rather meet in person, say
+              so and we will find a coffee.
+            </motion.p>
+            <motion.p
+              data-reveal="y20"
+              initial={false}
+              whileInView={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
+              viewport={viewportOnce}
+              transition={{ duration: DURATION.slow, delay: 0.2 }}
+            >
+              People find us searching for a web development company in Lahore,
+              an app development company in Lahore, or an AI automation company
+              in Pakistan. They usually arrive with the same worry: whether
+              outsourcing software development to Pakistan means late nights,
+              vague invoices, and a codebase nobody at home can read. Our
+              answer is structural. Fixed scope agreed before kickoff. Your IP
+              from the first commit. Repo access on day one. Payment split 40 /
+              40 / 20 across kickoff, midpoint, and handover, so neither side
+              is ever more than one milestone exposed.
+            </motion.p>
+            <motion.p
+              data-reveal="y20"
+              initial={false}
+              whileInView={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
+              viewport={viewportOnce}
+              transition={{ duration: DURATION.slow, delay: 0.3 }}
+            >
+              Hiring developers in Pakistan should cost you less than a Western
+              agency and less risk than a marketplace. That is the whole
+              proposition. Not sure which service you need yet? Start with{" "}
+              <Link
+                href="/services/web-development"
+                className="text-[var(--color-ink)] font-medium underline underline-offset-4 decoration-[var(--color-yellow)] decoration-2"
+              >
+                Next.js web development
+              </Link>
+              ,{" "}
+              <Link
+                href="/services/mobile-app-development"
+                className="text-[var(--color-ink)] font-medium underline underline-offset-4 decoration-[var(--color-yellow)] decoration-2"
+              >
+                React Native app development
+              </Link>
+              ,{" "}
+              <Link
+                href="/services/ai-automation"
+                className="text-[var(--color-ink)] font-medium underline underline-offset-4 decoration-[var(--color-yellow)] decoration-2"
+              >
+                AI automation
+              </Link>
+              , or{" "}
+              <Link
+                href="/services/ai-consulting"
+                className="text-[var(--color-ink)] font-medium underline underline-offset-4 decoration-[var(--color-yellow)] decoration-2"
+              >
+                AI integration consulting
+              </Link>
+              .
+            </motion.p>
+          </div>
         </div>
       </Section>
     </>

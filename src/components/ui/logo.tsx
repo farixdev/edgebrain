@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 interface LogoProps {
@@ -15,7 +16,7 @@ const sizeMap = {
 
 export function Logo({ className, size = "md", variant = "dark" }: LogoProps) {
   return (
-    <a
+    <Link
       href="/"
       className={cn(
         "font-[var(--font-logo)] font-extrabold tracking-tight inline-flex items-baseline gap-0",
@@ -32,6 +33,6 @@ export function Logo({ className, size = "md", variant = "dark" }: LogoProps) {
         className="inline-block w-[0.35em] h-[0.35em] rounded-full bg-[var(--color-yellow)] ml-[0.05em] translate-y-[0.05em]"
         aria-hidden="true"
       />
-    </a>
+    </Link>
   );
 }
