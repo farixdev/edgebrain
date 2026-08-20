@@ -118,7 +118,7 @@ export function ChatLeadForm({
             disabled={submitting}
             aria-invalid={Boolean(errors.name)}
             aria-describedby={errors.name ? `${nameId}-error` : undefined}
-            placeholder="Ayesha Khan"
+            placeholder="Your name"
             onChange={(event) => {
               setName(event.target.value);
               revalidate(event.target.value, email);

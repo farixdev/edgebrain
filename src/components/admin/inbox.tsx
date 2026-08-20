@@ -654,15 +654,25 @@ const ROLE_META: Record<
   ChatMessage["role"],
   { label: string; bubble: string; name: string }
 > = {
+  /**
+   * The customer's own words are the reason this screen exists, so they get the
+   * highest-contrast treatment on the page.
+   *
+   * This used to be `bg-[#1a1a1a]` on a `#141414` panel — two greys four points
+   * apart, which read as no bubble at all. Next to an AI reply that is usually
+   * three times longer, the eye skipped the question entirely and the inbox
+   * looked like it was dropping visitor messages.
+   */
   visitor: {
-    label: "Visitor",
-    name: "text-white/50",
-    bubble: "bg-[#1a1a1a] border border-white/10 text-white/85",
+    label: "Customer",
+    name: "text-white",
+    bubble: "bg-white/[0.13] border border-white/25 text-white",
   },
+  /** Deliberately recessed: the dashed border marks it as machine-written. */
   assistant: {
     label: "AI assistant",
-    name: "text-white/35",
-    bubble: "bg-white/[0.03] border border-dashed border-white/12 text-white/70",
+    name: "text-white/40",
+    bubble: "bg-white/[0.03] border border-dashed border-white/15 text-white/65",
   },
   admin: {
     label: "You",
