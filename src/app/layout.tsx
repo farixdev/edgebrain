@@ -4,6 +4,7 @@ import { SmoothScrollProvider } from "@/components/providers/smooth-scroll";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { RevealGuard } from "@/components/providers/reveal-guard";
+import { ChatMount } from "@/components/providers/chat-mount";
 import { ORGANIZATION_ID, SITE, WEBSITE_ID } from "@/lib/constants";
 import "./globals.css";
 
@@ -283,6 +284,10 @@ export default function RootLayout({
           <main>{children}</main>
           <Footer />
         </SmoothScrollProvider>
+        {/* Last in <body> so the fixed launcher stacks above page content
+            without needing a z-index war. ChatMount renders nothing at all on
+            /admin — see the component for why. */}
+        <ChatMount />
       </body>
     </html>
   );

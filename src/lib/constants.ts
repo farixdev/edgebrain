@@ -70,6 +70,47 @@ export const REVIEWS = contentData.reviews;
 export const FAQS = contentData.faqs;
 export const DIFFERENTIATORS = contentData.differentiators;
 
+/* -------------------------------------------------------------------------- */
+/*  Project thumbnail uploads                                                  */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Thumbnails uploaded from the admin panel are stored as base64 `data:` URIs
+ * inside the content document, not as files.
+ *
+ * The route used to write into public/images/projects, which — like the old
+ * content.json write — silently does nothing on Vercel's read-only runtime
+ * filesystem. Even where it appeared to work it was wrong: a file written to
+ * the running container disappears on the next deploy, because /public is
+ * baked at build time.
+ *
+ * A data URI has no such problem. It travels with the JSON, survives deploys,
+ * needs no bucket, no credentials and no CDN, and `next/image` renders a
+ * `data:` src directly (it skips the optimiser for them). The cost is payload
+ * size, which is why the cap below is small and enforced on both ends.
+ *
+ * If the studio ever needs full-bleed case-study imagery rather than a handful
+ * of card thumbnails, that is the moment to put real object storage behind
+ * this — not the moment to raise the cap.
+ */
+export const MAX_THUMBNAIL_BYTES = 500 * 1024;
+
+/** Human-readable form of {@link MAX_THUMBNAIL_BYTES}, for UI copy. */
+export const MAX_THUMBNAIL_LABEL = "500 KB";
+
+/**
+ * Raster formats only. An SVG is a script-carrying document, and the upside of
+ * accepting one for a project card does not pay for having to reason about
+ * that.
+ */
+export const ALLOWED_THUMBNAIL_TYPES = [
+  "image/png",
+  "image/jpeg",
+  "image/webp",
+  "image/avif",
+  "image/gif",
+] as const;
+
 export const TECH_LOGOS = [
   "React",
   "Next.js",

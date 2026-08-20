@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import nodemailer from "nodemailer";
+import { escapeHtml, sendMail } from "@/lib/mailer";
 
 const RECIPIENTS = [
   "edgebrainstudios@gmail.com",
@@ -17,14 +17,6 @@ export async function POST(request: Request) {
       );
     }
 
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_APP_PASSWORD,
-      },
-    });
-
     const htmlBody = `
       <h2>New Project Inquiry</h2>
       <table style="border-collapse:collapse;width:100%;max-width:600px;">
@@ -36,9 +28,8 @@ export async function POST(request: Request) {
       </table>
     `;
 
-    await transporter.sendMail({
-      from: `"EdgeBrain Studios" <${process.env.GMAIL_USER}>`,
-      to: RECIPIENTS.join(", "),
+    await sendMail({
+      to: RECIPIENTS,
       replyTo: email,
       subject: `New Project Inquiry from ${name}`,
       html: htmlBody,
@@ -52,12 +43,4 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-}
-
-function escapeHtml(str: string): string {
-  return str
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
 }

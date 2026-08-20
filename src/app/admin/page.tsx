@@ -1,6 +1,19 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
+import { Inbox } from "@/components/admin/inbox";
+import { ChatSettingsPanel } from "@/components/admin/chat-settings";
+import {
+  BTN_DANGER,
+  BTN_PRIMARY,
+  BTN_SECONDARY,
+  CARD,
+  HELP,
+  INPUT,
+  LABEL,
+  TEXTAREA,
+} from "@/components/admin/styles";
+import { MAX_THUMBNAIL_LABEL } from "@/lib/constants";
 
 /* ------------------------------------------------------------------ */
 /*  Types matching content.json shape                                  */
@@ -79,25 +92,37 @@ interface SiteContent {
 /*  Tabs                                                               */
 /* ------------------------------------------------------------------ */
 
-const TABS = ["Services", "Projects", "Reviews", "FAQ", "Stats", "Contact"] as const;
+const TABS = [
+  "Services",
+  "Projects",
+  "Reviews",
+  "FAQ",
+  "Stats",
+  "Contact",
+  "Inbox",
+  "Chat Settings",
+] as const;
 type Tab = (typeof TABS)[number];
 
-/* ------------------------------------------------------------------ */
-/*  Reusable style constants                                           */
-/* ------------------------------------------------------------------ */
+/**
+ * The first six tabs edit one shared document and are saved together by the
+ * sticky bar at the bottom. Inbox and Chat Settings talk to their own
+ * endpoints and own their own save/refresh affordances, so the shared bar is
+ * hidden for them — a "Save Changes" button that saves something other than
+ * what is on screen is worse than no button.
+ */
+const CONTENT_TABS: readonly Tab[] = [
+  "Services",
+  "Projects",
+  "Reviews",
+  "FAQ",
+  "Stats",
+  "Contact",
+];
 
-const INPUT =
-  "w-full rounded-md border border-white/10 bg-[#1a1a1a] px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-[#FFD400] focus:outline-none focus:ring-1 focus:ring-[#FFD400]/40 transition-colors";
-const TEXTAREA = `${INPUT} resize-y min-h-[72px]`;
-const CARD =
-  "rounded-lg border border-white/10 bg-[#141414] p-4 space-y-3 relative";
-const LABEL = "block text-xs font-medium text-white/50 mb-1";
-const BTN_PRIMARY =
-  "inline-flex items-center gap-2 rounded-md bg-[#FFD400] px-4 py-2 text-sm font-semibold text-[#0E0E0E] hover:bg-[#ffe44d] transition-colors cursor-pointer";
-const BTN_SECONDARY =
-  "inline-flex items-center gap-2 rounded-md border border-white/10 bg-[#1a1a1a] px-4 py-2 text-sm font-medium text-white/70 hover:text-white hover:border-white/20 transition-colors cursor-pointer";
-const BTN_DANGER =
-  "absolute top-3 right-3 w-7 h-7 flex items-center justify-center rounded-md text-white/30 hover:text-red-400 hover:bg-red-400/10 transition-colors cursor-pointer";
+/** How often the tab badge re-checks for unread threads while you are on any
+ *  other tab. The Inbox itself polls far more often (10s) while it is open. */
+const UNREAD_POLL_MS = 30_000;
 
 /* ------------------------------------------------------------------ */
 /*  Component                                                          */
@@ -119,6 +144,9 @@ export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<Tab>("Services");
   const [toast, setToast] = useState<{ msg: string; ok: boolean } | null>(null);
   const [saving, setSaving] = useState(false);
+
+  /* Unread chat threads, mirrored onto the Inbox tab label */
+  const [unread, setUnread] = useState(0);
 
   /* ---- Toast ---------------------------------------------------- */
   const showToast = useCallback((msg: string, ok: boolean) => {
@@ -146,27 +174,29 @@ export default function AdminPage() {
     setAuthError("");
     setAuthLoading(true);
     try {
-      /* Validate password by attempting a no-op PUT */
-      const current = await fetch("/api/admin/content");
-      if (!current.ok) throw new Error("Cannot reach API");
-      const body = await current.json();
-
-      const res = await fetch("/api/admin/content", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "x-admin-email": email,
-          "x-admin-password": password,
-        },
-        body: JSON.stringify(body),
+      /**
+       * Credentials are checked against a read-only, admin-guarded endpoint.
+       *
+       * This used to validate the password by PUTting the entire content
+       * document back to the server — which meant every login attempt, correct
+       * or not, was a live write to the site's content. GET chat-settings needs
+       * the same credentials, reads a single row, and changes nothing.
+       */
+      const probe = await fetch("/api/admin/chat-settings", {
+        headers: { "x-admin-email": email, "x-admin-password": password },
+        cache: "no-store",
       });
-      if (res.status === 401) {
+      if (probe.status === 401) {
         setAuthError("Invalid email or password");
         return;
       }
-      if (!res.ok) throw new Error("Server error");
+      if (!probe.ok) throw new Error("Server error");
+
+      const current = await fetch("/api/admin/content", { cache: "no-store" });
+      if (!current.ok) throw new Error("Cannot reach API");
+
+      setContent(await current.json());
       setAuthed(true);
-      setContent(body);
     } catch (err) {
       setAuthError(err instanceof Error ? err.message : "Login failed");
     } finally {
@@ -174,9 +204,51 @@ export default function AdminPage() {
     }
   };
 
-  /* Content is populated directly by handleLogin (it already fetches the
-     payload it validates against), and can be refreshed on demand via the
-     Reload button, so no load-on-mount effect is needed. */
+  /* ---- Session expiry ------------------------------------------- */
+  const handleUnauthorized = useCallback(() => {
+    setAuthed(false);
+    setPassword("");
+    setContent(null);
+    showToast("Session expired — please log in again", false);
+  }, [showToast]);
+
+  /* Content is populated directly by handleLogin, and can be refreshed on
+     demand via the Discard button, so no load-on-mount effect is needed. */
+
+  /**
+   * Unread badge upkeep.
+   *
+   * The Inbox reports the count it already fetched while it is open. This
+   * lighter poll exists for every other tab, so the badge is not stale for
+   * however long you happen to be editing FAQs. Both the interval and the
+   * initial fetch are torn down on logout via the `authed` dependency.
+   */
+  useEffect(() => {
+    if (!authed || activeTab === "Inbox") return;
+
+    let cancelled = false;
+    const check = async () => {
+      if (typeof document !== "undefined" && document.hidden) return;
+      try {
+        const res = await fetch("/api/admin/chat?limit=1", {
+          headers: { "x-admin-email": email, "x-admin-password": password },
+          cache: "no-store",
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!cancelled) setUnread(Number(data.unread ?? 0));
+      } catch {
+        /* A failed badge refresh is not worth a toast. */
+      }
+    };
+
+    void check();
+    const timer = window.setInterval(check, UNREAD_POLL_MS);
+    return () => {
+      cancelled = true;
+      window.clearInterval(timer);
+    };
+  }, [authed, activeTab, email, password]);
 
   /* ---- Save ----------------------------------------------------- */
   const handleSave = async () => {
@@ -193,11 +265,15 @@ export default function AdminPage() {
         body: JSON.stringify(content),
       });
       if (res.status === 401) {
-        showToast("Session expired — please log in again", false);
-        setAuthed(false);
+        handleUnauthorized();
         return;
       }
-      if (!res.ok) throw new Error("Save failed");
+      if (!res.ok) {
+        // The route now reports *why* a save failed instead of returning a
+        // cheerful 200 over a filesystem that ignored the write.
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.error ?? "Save failed");
+      }
       showToast("Changes saved", true);
     } catch (err) {
       showToast(err instanceof Error ? err.message : "Save failed", false);
@@ -461,6 +537,7 @@ export default function AdminPage() {
             <label className={LABEL}>Thumbnail</label>
             <div className="flex gap-3 items-center">
               {p.thumbnail ? (
+                // eslint-disable-next-line @next/next/no-img-element -- a base64 data URI has nothing for next/image to optimise
                 <img src={p.thumbnail} alt="" className="w-20 h-14 rounded object-cover border border-white/10" />
               ) : (
                 <div className="w-20 h-14 rounded border border-dashed border-white/20 flex items-center justify-center text-white/20 text-xs">No img</div>
@@ -469,26 +546,33 @@ export default function AdminPage() {
                 Upload
                 <input
                   type="file"
-                  accept="image/*"
+                  accept="image/png,image/jpeg,image/webp,image/avif,image/gif"
                   className="hidden"
                   onChange={async (e) => {
-                    const file = e.target.files?.[0];
-                    if (!file || !p.slug) return;
+                    const input = e.currentTarget;
+                    const file = input.files?.[0];
+                    if (!file) return;
                     const fd = new FormData();
                     fd.append("file", file);
-                    fd.append("slug", p.slug);
                     try {
                       const res = await fetch("/api/admin/upload", {
                         method: "POST",
                         headers: { "x-admin-email": email, "x-admin-password": password },
                         body: fd,
                       });
-                      if (!res.ok) throw new Error("Upload failed");
-                      const data = await res.json();
+                      if (res.status === 401) {
+                        handleUnauthorized();
+                        return;
+                      }
+                      const data = await res.json().catch(() => null);
+                      if (!res.ok) throw new Error(data?.error ?? "Upload failed");
                       updateProject(i, "thumbnail", data.url);
-                      showToast("Image uploaded", true);
-                    } catch {
-                      showToast("Upload failed", false);
+                      showToast("Image added — remember to Save Changes", true);
+                    } catch (err) {
+                      showToast(err instanceof Error ? err.message : "Upload failed", false);
+                    } finally {
+                      // Lets the same file be re-picked after a failure.
+                      input.value = "";
                     }
                   }}
                 />
@@ -497,6 +581,13 @@ export default function AdminPage() {
                 <button onClick={() => updateProject(i, "thumbnail", "")} className="text-xs text-red-400 hover:text-red-300">Remove</button>
               )}
             </div>
+            <p className={HELP}>
+              PNG, JPEG, WebP, AVIF or GIF, up to {MAX_THUMBNAIL_LABEL}. The
+              image is stored inside the content document itself rather than as
+              a file, because the production filesystem is read-only &mdash; so
+              it only goes live once you hit Save Changes, and the size limit is
+              what keeps the document small enough to load quickly.
+            </p>
           </div>
         </div>
       ))}
@@ -635,6 +726,30 @@ export default function AdminPage() {
     </div>
   );
 
+  /**
+   * The Inbox is mounted only while its tab is active, which is what stops its
+   * 10s poll: unmounting runs the effect cleanup that clears the interval.
+   * Keeping it mounted-but-hidden would leave the timer running forever.
+   */
+  const renderInbox = () => (
+    <Inbox
+      email={email}
+      password={password}
+      onUnreadChange={setUnread}
+      onToast={showToast}
+      onUnauthorized={handleUnauthorized}
+    />
+  );
+
+  const renderChatSettings = () => (
+    <ChatSettingsPanel
+      email={email}
+      password={password}
+      onToast={showToast}
+      onUnauthorized={handleUnauthorized}
+    />
+  );
+
   const tabContent: Record<Tab, () => React.JSX.Element> = {
     Services: renderServices,
     Projects: renderProjects,
@@ -642,6 +757,8 @@ export default function AdminPage() {
     FAQ: renderFaq,
     Stats: renderStats,
     Contact: renderContact,
+    Inbox: renderInbox,
+    "Chat Settings": renderChatSettings,
   };
 
   /* ================================================================ */
@@ -672,6 +789,7 @@ export default function AdminPage() {
               setAuthed(false);
               setPassword("");
               setContent(null);
+              setUnread(0);
             }}
             className={BTN_SECONDARY}
           >
@@ -687,13 +805,21 @@ export default function AdminPage() {
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap cursor-pointer ${
+              className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap cursor-pointer ${
                 activeTab === tab
                   ? "border-[#FFD400] text-[#FFD400]"
                   : "border-transparent text-white/50 hover:text-white/80"
               }`}
             >
               {tab}
+              {tab === "Inbox" && unread > 0 && (
+                <span
+                  className="inline-flex min-w-[18px] items-center justify-center rounded-full bg-[#FFD400] px-1.5 text-[10px] font-bold leading-[18px] text-[#0E0E0E]"
+                  aria-label={`${unread} unread`}
+                >
+                  {unread > 99 ? "99+" : unread}
+                </span>
+              )}
             </button>
           ))}
         </div>
@@ -702,17 +828,20 @@ export default function AdminPage() {
       {/* Content area */}
       <div className="mx-auto max-w-5xl px-4 py-6">{tabContent[activeTab]()}</div>
 
-      {/* Sticky save bar */}
-      <div className="sticky bottom-0 border-t border-white/10 bg-[#0E0E0E]/95 backdrop-blur-sm">
-        <div className="mx-auto flex max-w-5xl items-center justify-end gap-3 px-4 py-3">
-          <button onClick={fetchContent} className={BTN_SECONDARY} disabled={saving}>
-            Discard Changes
-          </button>
-          <button onClick={handleSave} className={BTN_PRIMARY} disabled={saving}>
-            {saving ? "Saving..." : "Save Changes"}
-          </button>
+      {/* Sticky save bar — content tabs only; Inbox and Chat Settings save
+          their own data through their own controls. */}
+      {CONTENT_TABS.includes(activeTab) && (
+        <div className="sticky bottom-0 border-t border-white/10 bg-[#0E0E0E]/95 backdrop-blur-sm">
+          <div className="mx-auto flex max-w-5xl items-center justify-end gap-3 px-4 py-3">
+            <button onClick={fetchContent} className={BTN_SECONDARY} disabled={saving}>
+              Discard Changes
+            </button>
+            <button onClick={handleSave} className={BTN_PRIMARY} disabled={saving}>
+              {saving ? "Saving..." : "Save Changes"}
+            </button>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
