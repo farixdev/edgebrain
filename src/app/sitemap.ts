@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { SITE } from "@/lib/constants";
 import { ARTICLES, articleHref } from "@/app/insights/articles";
+import { INDUSTRIES } from "@/app/industries/industries";
 
 /**
  * Case-study slugs.
@@ -69,6 +70,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.9,
     },
+    // Vendor/stack spokes. Someone searching "Payload CMS agency" has already
+    // picked the tool and is shopping for a team, which is the most commercial
+    // intent on the site.
+    {
+      url: `${baseUrl}/services/payload-cms-development`,
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/services/supabase-development`,
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
 
     { url: `${baseUrl}/contact`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${baseUrl}/work`, changeFrequency: "weekly", priority: 0.8 },
@@ -122,7 +136,26 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: new Date(`${article.publishedAt}T00:00:00Z`),
   }));
 
-  return [...staticRoutes, ...projectRoutes, ...articleRoutes].map((entry) => ({
+  /**
+   * Derived from the registry so a new vertical appears here the moment its
+   * route exists. Priority sits just under the service pages: an industry page
+   * is commercial, but it qualifies a visitor rather than closing one.
+   *
+   * There is deliberately no `/industries` hub entry — the hub was not built,
+   * so listing it would put a 404 in the sitemap.
+   */
+  const industryRoutes: MetadataRoute.Sitemap = INDUSTRIES.map((industry) => ({
+    url: `${baseUrl}/industries/${industry.slug}`,
+    changeFrequency: "monthly" as const,
+    priority: 0.8,
+  }));
+
+  return [
+    ...staticRoutes,
+    ...projectRoutes,
+    ...articleRoutes,
+    ...industryRoutes,
+  ].map((entry) => ({
     ...entry,
     lastModified: entry.lastModified ?? lastModified,
   }));

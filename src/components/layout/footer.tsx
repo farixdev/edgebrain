@@ -35,6 +35,31 @@ const TECHNOLOGY_PAGES = [
     label: "n8n automation development",
     href: "/services/n8n-automation-development",
   },
+  {
+    label: "Payload CMS development",
+    href: "/services/payload-cms-development",
+  },
+  {
+    label: "Supabase development",
+    href: "/services/supabase-development",
+  },
+] as const;
+
+/**
+ * Vertical pages.
+ *
+ * These are the only site-wide links into /industries — the hub page was not
+ * built, so without this column the four pages would be reachable from the
+ * sitemap alone. Linking them from every page is what makes them crawlable.
+ */
+const INDUSTRY_PAGES = [
+  { label: "Healthcare & telehealth", href: "/industries/healthcare-software-development" },
+  { label: "Fintech & payments", href: "/industries/fintech-payments-software-development" },
+  {
+    label: "Logistics & supply chain",
+    href: "/industries/logistics-supply-chain-software-development",
+  },
+  { label: "B2B SaaS", href: "/industries/saas-product-development" },
 ] as const;
 
 export function Footer() {
@@ -113,6 +138,22 @@ export function Footer() {
                   All services
                 </Link>
               </li>
+            </ul>
+
+            <h3 className="text-xs uppercase tracking-[0.15em] text-[var(--color-mute)] mt-8 mb-5 font-medium">
+              Industries
+            </h3>
+            <ul className="space-y-3">
+              {INDUSTRY_PAGES.map((page) => (
+                <li key={page.href}>
+                  <Link
+                    href={page.href}
+                    className="text-sm text-[var(--color-offwhite)]/70 hover:text-[var(--color-yellow)] transition-colors duration-[var(--duration-fast)]"
+                  >
+                    {page.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
